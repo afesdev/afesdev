@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import TarjetaApp from '../../components/TarjetaApp.astro';
+
+const apps = (await getCollection('apps')).sort((a, b) => a.data.orden - b.data.orden);
+---
+
+<Base
+  titulo="Apps"
+  descripcion="Apps móviles hechas por afesdev: Aprende C# para aprender a programar y Financially para tus finanzas personales."
+>
+  <section class="seccion">
+    <div class="contenedor">
+      <span class="antetitulo">Mis apps</span>
+      <h1 class="titulo-seccion">Apps que diseñé, programé y publiqué</h1>
+      <div class="rejilla">
+        {apps.map((app) => <TarjetaApp app={app} />)}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .rejilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 28px;
+    margin-top: 44px;
+  }
+</style>

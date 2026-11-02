@@ -1,0 +1,137 @@
+:root {
+  --noche: #101828;
+  --noche-2: #1b2540;
+  --coral: #ff6b4a;
+  --coral-osc: #e5532f;
+  --texto: #1d2433;
+  --suave: #5b6478;
+  --fondo: #f6f7fb;
+  --borde: #e4e7ef;
+  --blanco: #fff;
+  --radio: 20px;
+  --ancho: 1160px;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --alto-cabecera: 72px;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--alto-cabecera) + 12px);
+}
+
+body {
+  margin: 0;
+  font-family: Manrope, system-ui, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.contenedor {
+  width: min(var(--ancho), 100% - 32px);
+  margin-inline: auto;
+}
+
+.seccion {
+  padding: clamp(64px, 9vw, 112px) 0;
+}
+
+/* La barra flota encima: la primera sección deja su espacio */
+main > .seccion:first-child {
+  padding-top: calc(var(--alto-cabecera) + clamp(40px, 6vw, 80px));
+}
+
+.antetitulo {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--coral-osc);
+  margin-bottom: 12px;
+}
+
+.titulo-seccion {
+  font-size: clamp(30px, 4.4vw, 46px);
+  font-weight: 800;
+  max-width: 720px;
+}
+
+.intro-seccion {
+  color: var(--suave);
+  font-size: 18px;
+  max-width: 620px;
+  margin: 16px 0 0;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 16px;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: transform 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.boton:hover {
+  transform: translateY(-2px);
+}
+
+.boton-coral {
+  background: var(--coral);
+  color: #fff;
+}
+
+.boton-coral:hover {
+  background: var(--coral-osc);
+}
+
+.boton-borde {
+  border-color: currentColor;
+}
+
+.chip {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+}
+
+:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+}

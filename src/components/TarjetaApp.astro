@@ -1,0 +1,97 @@
+---
+// Tarjeta de una app para la portada y el listado de apps
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import Icono from './Icono.astro';
+interface Props {
+  app: CollectionEntry<'apps'>;
+}
+const { app } = Astro.props;
+const { nombre, eslogan, resumen, categoria, estado, icono, destacado, colores } = app.data;
+---
+
+<a class="tarjeta" href={`/apps/${app.id}`} style={`--app:${colores.principal};--app-suave:${colores.suave}`}>
+  <div class="portada">
+    <Image src={destacado} alt="" width={720} />
+  </div>
+  <div class="cuerpo">
+    <div class="cabeza">
+      <Image class="icono" src={icono} alt="" width={128} />
+      <div>
+        <h3>{nombre}</h3>
+        <span class="meta">
+          {categoria} · {estado === 'publicada' ? 'En Google Play' : 'Muy pronto'}
+        </span>
+      </div>
+    </div>
+    <p class="eslogan">{eslogan}</p>
+    <p class="resumen">{resumen}</p>
+    <span class="ver">Ver la app <Icono nombre="flecha" tam={18} /></span>
+  </div>
+</a>
+
+<style>
+  .tarjeta {
+    display: flex;
+    flex-direction: column;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 28px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .tarjeta:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 50px rgba(16, 24, 40, 0.12);
+  }
+  .portada :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1024 / 500;
+    object-fit: cover;
+  }
+  .cuerpo {
+    padding: 24px 26px 28px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .cabeza {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cabeza :global(.icono) {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    box-shadow: 0 0 0 1px var(--borde);
+  }
+  h3 {
+    font-size: 24px;
+    font-weight: 800;
+  }
+  .meta {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--app);
+  }
+  .eslogan {
+    margin: 18px 0 6px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .resumen {
+    margin: 0 0 20px;
+    color: var(--suave);
+  }
+  .ver {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    color: var(--app);
+  }
+</style>

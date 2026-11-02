@@ -1,0 +1,49 @@
+---
+// Logo de afesdev: la "A" con el punto coral (el mismo del banner de YouTube)
+import { sitio } from '../data/sitio';
+interface Props {
+  tam?: number;
+}
+const { tam = 36 } = Astro.props;
+---
+
+<a href="/" class="logo" aria-label={`${sitio.nombre}, inicio`}>
+  <span class="marca" style={`width:${tam}px;height:${tam}px`}>
+    <svg viewBox="0 0 96 96" width="72%" height="72%" aria-hidden="true">
+      <rect x="20" y="16" width="15" height="64" rx="7.5" fill="#fff" transform="rotate(20 48 48)"></rect>
+      <rect x="61" y="16" width="15" height="64" rx="7.5" fill="#fff" transform="rotate(-20 48 48)"></rect>
+      <circle cx="48" cy="60" r="8" fill="#FF6B4A"></circle>
+    </svg>
+  </span>
+  <span class="nombre">{sitio.nombre}<i></i></span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #fff;
+  }
+  .marca {
+    display: grid;
+    place-items: center;
+    border-radius: 28%;
+    background: #0b1120;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  .nombre {
+    font-weight: 800;
+    font-size: 21px;
+    letter-spacing: -0.03em;
+  }
+  .nombre i {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--coral);
+    margin-left: 2px;
+  }
+</style>

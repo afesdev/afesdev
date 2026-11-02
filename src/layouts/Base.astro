@@ -1,0 +1,417 @@
+---
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import Icono from '../components/Icono.astro';
+import BotonWhatsApp from '../components/BotonWhatsApp.astro';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { sitio } from '../data/sitio';
+
+interface Props {
+  // Se muestra como "<titulo> · afesdev". Con tituloSeo se usa ese texto tal cual.
+  titulo?: string;
+  tituloSeo?: string;
+  descripcion?: string;
+  // Imagen al compartir el enlace (WhatsApp, Facebook, X). Sin ella se usa /og-sitio.png
+  imagen?: ImageMetadata;
+  // Datos estructurados (schema.org) de la página
+  datos?: Record<string, unknown>[];
+  sinIndexar?: boolean;
+}
+const { titulo, tituloSeo, descripcion = sitio.descripcion, imagen, datos = [], sinIndexar = false } = Astro.props;
+const tituloCompleto = tituloSeo ?? (titulo ? `${titulo} · ${sitio.nombre}` : sitio.titulo);
+
+const canonico = new URL(Astro.url.pathname, Astro.site);
+const og = imagen
+  ? await getImage({ src: imagen, format: 'png', width: imagen.width })
+  : { src: '/og-sitio.png', attributes: { width: 1200, height: 630 } };
+const ogUrl = new URL(og.src, Astro.site);
+
+// Datos que van en todas las páginas: el sitio y quién lo hace
+const datosBase = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: sitio.nombre,
+    url: Astro.site?.href,
+    inLanguage: 'es',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': new URL('/#afesdev', Astro.site).href,
+    name: sitio.nombre,
+    url: Astro.site?.href,
+    jobTitle: 'Desarrollador de apps móviles',
+    email: `mailto:${sitio.correo}`,
+    sameAs: Object.values(sitio.redes),
+    knowsAbout: ['Flutter', 'Dart', 'C#', '.NET', 'Desarrollo de apps móviles', 'Google Play'],
+  },
+];
+
+const enlaces = [
+  { href: '/#apps', texto: 'Apps', seccion: 'apps' },
+  { href: '/#servicios', texto: 'Servicios', seccion: 'servicios' },
+  { href: '/#sobre-mi', texto: 'Sobre mí', seccion: 'sobre-mi' },
+];
+// En las páginas de las apps se marca "Apps"; en la portada lo decide el script según la sección visible
+const enApps = Astro.url.pathname.startsWith('/apps');
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonico} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {sinIndexar && <meta name="robots" content="noindex" />}
+    <meta name="author" content={sitio.nombre} />
+    <meta name="theme-color" content="#101828" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={sitio.nombre} />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:url" content={canonico} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content={String(og.attributes.width)} />
+    <meta property="og:image:height" content={String(og.attributes.height)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={tituloCompleto} />
+    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    {[...datosBase, ...datos].map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="cabecera" data-cabecera>
+      <div class="barra">
+        <Logo />
+        <nav class="nav" aria-label="Principal">
+          <ul class="enlaces">
+            {
+              enlaces.map((e) => (
+                <li>
+                  <a href={e.href} data-seccion={e.seccion} class:list={{ activo: enApps && e.seccion === 'apps' }}>
+                    {e.texto}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        <a class="contacto" href="/#contacto">Hablemos <Icono nombre="flecha" tam={16} /></a>
+        <button class="menu" type="button" aria-expanded="false" aria-controls="menu-movil" aria-label="Abrir menú">
+          <span></span><span></span>
+        </button>
+      </div>
+      <nav class="panel" id="menu-movil" aria-label="Menú" hidden>
+        {
+          enlaces.map((e) => (
+            <a href={e.href} data-seccion={e.seccion} class:list={{ activo: enApps && e.seccion === 'apps' }}>
+              {e.texto} <Icono nombre="flecha" tam={18} />
+            </a>
+          ))
+        }
+        <a class="contacto" href="/#contacto">Hablemos <Icono nombre="flecha" tam={16} /></a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="pie">
+      <div class="contenedor fila">
+        <Logo tam={30} />
+        <p>Apps móviles hechas con cuidado, de la idea a Google Play.</p>
+        <div class="redes">
+          <a href={`mailto:${sitio.correo}`} aria-label="Correo"><Icono nombre="correo" /></a>
+          <a href={sitio.redes.youtube} target="_blank" rel="noopener" aria-label="YouTube"><Icono nombre="youtube" /></a>
+        </div>
+      </div>
+      <div class="contenedor derechos">© {new Date().getFullYear()} {sitio.nombre}</div>
+    </footer>
+
+    <BotonWhatsApp />
+
+    <script>
+      const cabecera = document.querySelector('[data-cabecera]')!;
+      const boton = cabecera.querySelector<HTMLButtonElement>('.menu')!;
+      const panel = document.getElementById('menu-movil')!;
+
+      const alternar = (abrir: boolean) => {
+        boton.setAttribute('aria-expanded', String(abrir));
+        boton.setAttribute('aria-label', abrir ? 'Cerrar menú' : 'Abrir menú');
+        panel.hidden = !abrir;
+      };
+      boton.addEventListener('click', () => alternar(panel.hidden));
+      panel.addEventListener('click', (e) => {
+        if ((e.target as Element).closest('a')) alternar(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') alternar(false);
+      });
+
+      // La barra se compacta al bajar
+      const compactar = () => cabecera.classList.toggle('compacta', scrollY > 24);
+      compactar();
+      addEventListener('scroll', compactar, { passive: true });
+
+      // En la portada, marca el enlace de la sección que está en pantalla
+      const enlaces = [...document.querySelectorAll<HTMLAnchorElement>('[data-seccion]')];
+      if (document.getElementById('apps')) {
+        const observador = new IntersectionObserver(
+          (entradas) => {
+            for (const entrada of entradas) {
+              if (!entrada.isIntersecting) continue;
+              const id = entrada.target.id;
+              enlaces.forEach((a) => a.classList.toggle('activo', a.dataset.seccion === id));
+            }
+          },
+          { rootMargin: '-45% 0px -50% 0px' },
+        );
+        document.querySelectorAll('main section').forEach((s) => observador.observe(s));
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  /* Barra flotante: ocupa --alto-cabecera y el contenido pasa por debajo */
+  .cabecera {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    height: var(--alto-cabecera);
+    margin-bottom: calc(var(--alto-cabecera) * -1);
+    padding: 12px 16px 0;
+    pointer-events: none;
+  }
+  .barra,
+  .panel {
+    pointer-events: auto;
+    max-width: var(--ancho);
+    margin-inline: auto;
+    background: rgba(16, 24, 40, 0.62);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(5, 8, 15, 0.18);
+  }
+  .barra {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 60px;
+    padding: 0 8px 0 12px;
+    border-radius: 999px;
+    transition:
+      max-width 0.35s ease,
+      background 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+  .compacta .barra {
+    max-width: 880px;
+    background: rgba(16, 24, 40, 0.86);
+    box-shadow: 0 14px 40px rgba(5, 8, 15, 0.32);
+  }
+  .nav {
+    margin-inline: auto;
+  }
+  .enlaces {
+    display: flex;
+    gap: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .enlaces a {
+    display: block;
+    padding: 8px 16px;
+    border-radius: 999px;
+    color: #c9d1e3;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14.5px;
+    transition:
+      color 0.2s,
+      background 0.2s;
+  }
+  .enlaces a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .enlaces a.activo {
+    color: var(--noche);
+    background: #fff;
+  }
+  .contacto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--coral);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14.5px;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(255, 107, 74, 0.35);
+    transition: background 0.2s;
+  }
+  .contacto:hover {
+    background: var(--coral-osc);
+  }
+  .contacto :global(svg) {
+    transition: transform 0.2s;
+  }
+  .contacto:hover :global(svg) {
+    transform: translateX(3px);
+  }
+
+  /* Botón de menú (celular): dos líneas que se vuelven una X */
+  .menu {
+    display: none;
+    position: relative;
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+  }
+  .menu span {
+    position: absolute;
+    left: 13px;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: #fff;
+    transition: transform 0.25s ease;
+  }
+  .menu span:first-child {
+    top: 18px;
+  }
+  .menu span:last-child {
+    top: 24px;
+  }
+  .menu[aria-expanded='true'] span:first-child {
+    transform: translateY(3px) rotate(45deg);
+  }
+  .menu[aria-expanded='true'] span:last-child {
+    transform: translateY(-3px) rotate(-45deg);
+  }
+
+  .panel {
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 24px;
+    background: rgba(16, 24, 40, 0.94);
+    animation: abrir 0.22s ease;
+  }
+  .panel:not([hidden]) {
+    display: grid;
+    gap: 4px;
+  }
+  .panel a:not(.contacto) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-radius: 16px;
+    color: #e8ecf5;
+    font-weight: 700;
+    font-size: 17px;
+    text-decoration: none;
+  }
+  .panel a:not(.contacto):hover,
+  .panel a.activo {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .panel .contacto {
+    margin-top: 6px;
+    padding: 14px;
+    font-size: 16px;
+  }
+  @keyframes abrir {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .nav,
+    .barra > .contacto {
+      display: none;
+    }
+    .menu {
+      display: block;
+    }
+  }
+  @media (min-width: 761px) {
+    .panel {
+      display: none !important;
+    }
+  }
+
+  .fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .pie {
+    background: var(--noche);
+    color: #9aa6c2;
+    padding: 48px 0 28px;
+  }
+  .pie p {
+    margin: 0;
+  }
+  .redes {
+    display: flex;
+    gap: 12px;
+  }
+  .redes a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+  }
+  .redes a:hover {
+    background: var(--coral);
+  }
+  .derechos {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 14px;
+  }
+  @media (max-width: 700px) {
+    .pie .fila {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

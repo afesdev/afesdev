@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base titulo="Página no encontrada" sinIndexar>
+  <section class="seccion">
+    <div class="contenedor nada">
+      <span class="antetitulo">Error 404</span>
+      <h1 class="titulo-seccion">Esta página no existe</h1>
+      <p class="intro-seccion">Puede que el enlace esté mal escrito o que la página se haya movido.</p>
+      <a class="boton boton-coral" href="/">Volver al inicio</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nada {
+    min-height: 50vh;
+  }
+  .boton {
+    margin-top: 28px;
+  }
+</style>

@@ -1,0 +1,134 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+
+// Una página por cada archivo de src/content/privacidad (con el mismo nombre que la app)
+export async function getStaticPaths() {
+  const politicas = await getCollection('privacidad');
+  return Promise.all(
+    politicas.map(async (politica) => {
+      const app = await getEntry('apps', politica.id);
+      if (!app) throw new Error(`No existe la app "${politica.id}" para su política de privacidad`);
+      return { params: { id: politica.id }, props: { politica, app } };
+    }),
+  );
+}
+
+interface Props {
+  politica: CollectionEntry<'privacidad'>;
+  app: CollectionEntry<'apps'>;
+}
+const { politica, app } = Astro.props;
+const d = app.data;
+const { Content } = await render(politica);
+---
+
+<Base
+  titulo={`Política de privacidad de ${d.nombre}`}
+  descripcion={`Qué datos recopila ${d.nombre}, cómo los usamos y cómo eliminar tu cuenta.`}
+>
+  <div style={`--app:${d.colores.principal};--app-osc:${d.colores.oscuro};--app-suave:${d.colores.suave}`}>
+    <section class="cabeza">
+      <div class="contenedor angosto">
+        <a class="volver" href={`/apps/${app.id}`}>← {d.nombre}</a>
+        <div class="identidad">
+          <Image class="icono" src={d.icono} alt="" width={128} loading="eager" />
+          <div>
+            <h1>Política de privacidad</h1>
+            <p>{d.nombre} · Actualizada el {politica.data.actualizada}</p>
+          </div>
+        </div>
+        <a class="atajo" href="#eliminar-cuenta">¿Quieres eliminar tu cuenta? →</a>
+      </div>
+    </section>
+
+    <section class="cuerpo">
+      <div class="contenedor angosto prosa">
+        <Content />
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .angosto {
+    max-width: 780px;
+  }
+  .cabeza {
+    color: #fff;
+    background: linear-gradient(135deg, var(--app-osc), var(--app));
+    padding: calc(var(--alto-cabecera) + 36px) 0 40px;
+  }
+  .volver {
+    display: inline-block;
+    margin-bottom: 24px;
+    font-weight: 700;
+    text-decoration: none;
+    opacity: 0.85;
+  }
+  .identidad {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .identidad :global(.icono) {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+  h1 {
+    font-size: clamp(30px, 4.5vw, 44px);
+    font-weight: 800;
+  }
+  .identidad p {
+    margin: 6px 0 0;
+    opacity: 0.85;
+    font-weight: 600;
+  }
+  .atajo {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .atajo:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
+
+  .cuerpo {
+    background: var(--blanco);
+    padding: 48px 0 88px;
+  }
+  .prosa {
+    font-size: 17px;
+    color: #3a4255;
+  }
+  .prosa :global(h2) {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--texto);
+    margin: 40px 0 12px;
+  }
+  .prosa :global(h3) {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--texto);
+    margin: 24px 0 8px;
+  }
+  .prosa :global(a) {
+    color: var(--app);
+    font-weight: 700;
+  }
+  .prosa :global(li) {
+    margin: 4px 0;
+  }
+  .prosa :global(strong) {
+    color: var(--texto);
+  }
+</style>
