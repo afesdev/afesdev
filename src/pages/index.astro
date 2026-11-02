@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import Telefono from '../components/Telefono.astro';
 import TarjetaApp from '../components/TarjetaApp.astro';
 import Icono from '../components/Icono.astro';
+import Redes from '../components/Redes.astro';
 import { sitio, servicios, proceso, tecnologias, redondear } from '../data/sitio';
 
 const apps = (await getCollection('apps')).sort((a, b) => a.data.orden - b.data.orden);
@@ -164,6 +165,8 @@ const cifras = [
           {sitio.correo}
         </a>
       </div>
+      <p class="siguenos">O sígueme en redes</p>
+      <div class="redes-contacto"><Redes /></div>
     </div>
   </section>
 </Base>
@@ -494,5 +497,15 @@ const cifras = [
   }
   .caja-contacto .boton {
     overflow-wrap: anywhere;
+  }
+  .caja-contacto .siguenos {
+    margin-top: 32px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .redes-contacto {
+    display: flex;
+    justify-content: center;
+    margin-top: 14px;
   }
 </style>

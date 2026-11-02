@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Logo from '../components/Logo.astro';
 import Icono from '../components/Icono.astro';
 import BotonWhatsApp from '../components/BotonWhatsApp.astro';
+import Redes from '../components/Redes.astro';
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { sitio } from '../data/sitio';
@@ -136,10 +137,7 @@ const enApps = Astro.url.pathname.startsWith('/apps');
       <div class="contenedor fila">
         <Logo tam={30} />
         <p>Apps móviles hechas con cuidado, de la idea a Google Play.</p>
-        <div class="redes">
-          <a href={`mailto:${sitio.correo}`} aria-label="Correo"><Icono nombre="correo" /></a>
-          <a href={sitio.redes.youtube} target="_blank" rel="noopener" aria-label="YouTube"><Icono nombre="youtube" /></a>
-        </div>
+        <Redes />
       </div>
       <div class="contenedor derechos">© {new Date().getFullYear()} {sitio.nombre}</div>
     </footer>
@@ -385,22 +383,6 @@ const enApps = Astro.url.pathname.startsWith('/apps');
   }
   .pie p {
     margin: 0;
-  }
-  .redes {
-    display: flex;
-    gap: 12px;
-  }
-  .redes a {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.06);
-    color: #fff;
-  }
-  .redes a:hover {
-    background: var(--coral);
   }
   .derechos {
     margin-top: 28px;

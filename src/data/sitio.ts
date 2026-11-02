@@ -6,8 +6,12 @@ export const sitio = {
   descripcion:
     'Desarrollo apps móviles a la medida con Flutter y C#: diseño, programación y publicación en Google Play. Conoce mis apps y cotiza la tuya.',
   correo: 'afesdev2025@gmail.com',
+  // Cada red aparece en el pie y en contacto, con el ícono del mismo nombre (src/components/Icono.astro)
   redes: {
     youtube: 'https://www.youtube.com/@afes-l7b',
+    instagram: 'https://www.instagram.com/aedeveloper_/',
+    tiktok: 'https://www.tiktok.com/@aedeveloper_',
+    threads: 'https://www.threads.com/@aedeveloper_',
   },
   // Número con indicativo del país, solo dígitos (ej: 573001234567). Vacío = no se muestra el botón.
   whatsapp: {

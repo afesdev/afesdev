@@ -1,0 +1,47 @@
+---
+// Botones de correo y redes sociales (los enlaces salen de sitio.redes)
+import Icono from './Icono.astro';
+import { sitio } from '../data/sitio';
+
+const nombres: Record<string, string> = {
+  youtube: 'YouTube',
+  instagram: 'Instagram',
+  tiktok: 'TikTok',
+  threads: 'Threads',
+};
+---
+
+<div class="redes">
+  <a href={`mailto:${sitio.correo}`} aria-label="Correo" title="Correo"><Icono nombre="correo" /></a>
+  {
+    Object.entries(sitio.redes).map(([red, url]) => (
+      <a href={url} target="_blank" rel="noopener me" aria-label={nombres[red] ?? red} title={nombres[red] ?? red}>
+        <Icono nombre={red} />
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .redes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .redes a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+    transition:
+      background 0.2s,
+      transform 0.2s;
+  }
+  .redes a:hover {
+    background: var(--coral);
+    transform: translateY(-2px);
+  }
+</style>
