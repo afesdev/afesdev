@@ -1,0 +1,702 @@
+---
+// Réplica en HTML y CSS de la isla de Islita, con textos de ejemplo. No usa datos reales de nadie.
+const estados = [
+  ['reposo', 'Reposo'],
+  ['musica', 'Música'],
+  ['letras', 'Letras'],
+  ['pomodoro', 'Pomodoro'],
+  ['tareas', 'Tareas'],
+  ['notificacion', 'Notificación'],
+  ['volumen', 'Volumen'],
+  ['sistema', 'Sistema'],
+];
+
+const anillos = [
+  { id: 'cpu', nombre: 'CPU', desde: '#ffd60a', hasta: '#ff9f0a' },
+  { id: 'ram', nombre: 'RAM', desde: '#ff9f0a', hasta: '#ff375f' },
+  { id: 'gpu', nombre: 'GPU', desde: '#ff375f', hasta: '#9e4df2' },
+];
+---
+
+<div class="demo" data-demo>
+  <div class="pantalla">
+    <div class="isla" data-isla data-estado="reposo">
+      <div class="isla-brillo" aria-hidden="true"></div>
+
+      <div class="vista vista-reposo" data-vista="reposo">
+        <span class="ojos" aria-hidden="true"><i></i><i></i></span>
+        <span class="reloj"><b data-hora>6:32</b> <small data-periodo>p. m.</small> <em>· <span data-fecha>mié 4</span></em></span>
+      </div>
+
+      <div class="vista vista-musica" data-vista="musica">
+        <div class="fila">
+          <div class="caratula" aria-hidden="true"></div>
+          <div class="textos">
+            <strong>Canción de ejemplo</strong>
+            <span>Artista de prueba</span>
+          </div>
+          <span class="barras" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        </div>
+        <div class="progreso"><small>1:24</small><span><i></i></span><small>3:40</small></div>
+        <div class="controles" aria-hidden="true"><span>⏮</span><span class="grande">⏸</span><span>⏭</span></div>
+      </div>
+
+      <div class="vista vista-letras" data-vista="letras">
+        <small class="cancion">Canción de ejemplo · Artista de prueba</small>
+        <p class="tenue">Esta letra es de mentira</p>
+        <p class="actual">y cambia al ritmo de la canción</p>
+        <p class="tenue">línea por línea, a tiempo</p>
+      </div>
+
+      <div class="vista vista-pomodoro" data-vista="pomodoro">
+        <div class="anillo-grande">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <defs>
+              <linearGradient id="g-pomodoro" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ff9f0a"></stop>
+                <stop offset="1" stop-color="#ff375f"></stop>
+              </linearGradient>
+            </defs>
+            <circle class="pista" cx="60" cy="60" r="53"></circle>
+            <circle class="trazo" cx="60" cy="60" r="53" stroke="url(#g-pomodoro)" pathLength="100" stroke-dasharray="82 100"></circle>
+          </svg>
+          <div><b>20:41</b><small>Enfoque</small></div>
+        </div>
+        <div class="lado">
+          <small>Sesión 2 de 4</small>
+          <span class="puntos" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span>
+          <span class="pausar">Pausar</span>
+        </div>
+      </div>
+
+      <div class="vista vista-tareas" data-vista="tareas">
+        <strong>Tareas</strong>
+        <ul>
+          <li class="hecha">Revisar el correo</li>
+          <li>Enviar la cotización</li>
+          <li>Llamar al cliente</li>
+        </ul>
+      </div>
+
+      <div class="vista vista-notificacion" data-vista="notificacion">
+        <div class="icono-noti" aria-hidden="true">🔔</div>
+        <div class="textos">
+          <small>Calendario</small>
+          <strong>Reunión en 10 minutos</strong>
+          <span>Revisión semanal del equipo</span>
+        </div>
+      </div>
+
+      <div class="vista vista-volumen" data-vista="volumen">
+        <span aria-hidden="true">🔊</span>
+        <span class="barra-volumen"><i></i></span>
+        <b>65</b>
+      </div>
+
+      <div class="vista vista-sistema" data-vista="sistema">
+        {
+          anillos.map((a) => (
+            <div class="medidor">
+              <svg viewBox="0 0 76 76" aria-hidden="true">
+                <defs>
+                  <linearGradient id={`g-${a.id}`} x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color={a.desde} />
+                    <stop offset="1" stop-color={a.hasta} />
+                  </linearGradient>
+                </defs>
+                <circle class="pista" cx="38" cy="38" r="33" />
+                <circle class="trazo" data-trazo={a.id} cx="38" cy="38" r="33" stroke={`url(#g-${a.id})`} pathLength="100" stroke-dasharray="20 100" />
+              </svg>
+              <b data-valor={a.id}>20%</b>
+              <small>{a.nombre}</small>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="selector" role="group" aria-label="Probar estados de la isla">
+    {
+      estados.map(([id, nombre], i) => (
+        <button type="button" data-ir={id} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {nombre}
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const demo = document.querySelector<HTMLElement>('[data-demo]')!;
+  const isla = demo.querySelector<HTMLElement>('[data-isla]')!;
+  const botones = [...demo.querySelectorAll<HTMLButtonElement>('[data-ir]')];
+  const orden = botones.map((b) => b.dataset.ir!);
+  const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let automatico: number | undefined;
+
+  function ir(estado: string) {
+    isla.dataset.estado = estado;
+    botones.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.ir === estado)));
+  }
+
+  function detener() {
+    clearInterval(automatico);
+    automatico = undefined;
+  }
+
+  botones.forEach((b) =>
+    b.addEventListener('click', () => {
+      detener();
+      ir(b.dataset.ir!);
+    }),
+  );
+
+  if (!sinMovimiento) {
+    automatico = window.setInterval(() => {
+      const actual = orden.indexOf(isla.dataset.estado!);
+      ir(orden[(actual + 1) % orden.length]);
+    }, 3200);
+  }
+
+  // Quien se detiene a leer o usa el teclado no debe ver cómo cambia solo.
+  demo.addEventListener('pointerenter', detener);
+  demo.addEventListener('focusin', detener);
+
+  // La hora de quien visita, igual que en la app.
+  function actualizarHora() {
+    const ahora = new Date();
+    const partes = new Intl.DateTimeFormat('es-CO', { hour: 'numeric', minute: '2-digit', hour12: true }).formatToParts(ahora);
+    const hora = partes.filter((p) => ['hour', 'literal', 'minute'].includes(p.type)).map((p) => p.value).join('').trim();
+    const periodo = partes.find((p) => p.type === 'dayPeriod')?.value ?? '';
+    const dia = new Intl.DateTimeFormat('es-CO', { weekday: 'short' }).format(ahora).replace('.', '');
+
+    demo.querySelector('[data-hora]')!.textContent = hora.replace(periodo, '').trim();
+    demo.querySelector('[data-periodo]')!.textContent = periodo;
+    demo.querySelector('[data-fecha]')!.textContent = `${dia} ${ahora.getDate()}`;
+  }
+
+  actualizarHora();
+  setInterval(actualizarHora, 15000);
+
+  // Valores de demostración: se mueven para mostrar el anillo, no miden este equipo.
+  const niveles: Record<string, number> = { cpu: 24, ram: 62, gpu: 12 };
+
+  function moverAnillos() {
+    for (const id of Object.keys(niveles)) {
+      niveles[id] = Math.min(92, Math.max(6, niveles[id] + (Math.random() * 24 - 12)));
+      demo.querySelector(`[data-trazo="${id}"]`)!.setAttribute('stroke-dasharray', `${niveles[id].toFixed(0)} 100`);
+      demo.querySelector(`[data-valor="${id}"]`)!.textContent = `${niveles[id].toFixed(0)}%`;
+    }
+  }
+
+  moverAnillos();
+  if (!sinMovimiento) {
+    setInterval(moverAnillos, 1500);
+  }
+</script>
+
+<style>
+  .demo {
+    --naranja: #ff9f0a;
+    --coral: #ff375f;
+    --violeta: #9e4df2;
+    --sol: #ffd60a;
+
+    /* Resorte con un ligero rebote, como el de la app. */
+    --resorte: linear(0, 0.26 7%, 0.72 17%, 1.02 28%, 1.07 36%, 1.03 48%, 0.995 62%, 1);
+
+    margin-top: 40px;
+  }
+
+  .pantalla {
+    position: relative;
+    height: clamp(280px, 34vw, 380px);
+    overflow: hidden;
+    border-radius: 24px;
+    background:
+      radial-gradient(90% 90% at 50% 112%, #ff7a3d 0%, transparent 62%),
+      radial-gradient(70% 80% at 12% 100%, #9e4df2 0%, transparent 60%),
+      linear-gradient(180deg, #2b1e4f 0%, #6d3a78 48%, #e8695b 100%);
+  }
+
+  .isla {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    overflow: hidden;
+    width: var(--ancho);
+    max-width: calc(100% - 16px);
+    height: var(--alto);
+    border-radius: 0 0 var(--radio) var(--radio);
+    background: #000;
+    box-shadow: 0 14px 40px rgb(0 0 0 / 35%);
+    color: #fff;
+    text-align: left;
+    transform: translateX(-50%);
+    transition:
+      width 0.62s var(--resorte),
+      height 0.62s var(--resorte),
+      border-radius 0.62s var(--resorte);
+  }
+
+  .isla[data-estado='reposo'] { --ancho: 205px; --alto: 34px; --radio: 17px; }
+  .isla[data-estado='musica'],
+  .isla[data-estado='letras'],
+  .isla[data-estado='pomodoro'],
+  .isla[data-estado='tareas'],
+  .isla[data-estado='sistema'] { --ancho: 400px; --alto: 176px; --radio: 38px; }
+  .isla[data-estado='notificacion'] { --ancho: 400px; --alto: 96px; --radio: 34px; }
+  .isla[data-estado='volumen'] { --ancho: 300px; --alto: 44px; --radio: 22px; }
+
+  .isla-brillo {
+    position: absolute;
+    inset: auto 0 0;
+    height: 60%;
+    background: linear-gradient(90deg, var(--naranja), var(--coral) 50%, var(--violeta));
+    mask-image: linear-gradient(180deg, transparent, #000);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .isla[data-estado='reposo'] .isla-brillo {
+    opacity: 0.85;
+    transition-delay: 0.25s;
+  }
+
+  .vista {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(400px, 100vw - 48px);
+    padding: 16px 22px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%);
+    transition: opacity 0.2s;
+  }
+
+  .isla[data-estado='reposo'] [data-vista='reposo'],
+  .isla[data-estado='musica'] [data-vista='musica'],
+  .isla[data-estado='letras'] [data-vista='letras'],
+  .isla[data-estado='pomodoro'] [data-vista='pomodoro'],
+  .isla[data-estado='tareas'] [data-vista='tareas'],
+  .isla[data-estado='notificacion'] [data-vista='notificacion'],
+  .isla[data-estado='volumen'] [data-vista='volumen'],
+  .isla[data-estado='sistema'] [data-vista='sistema'] {
+    opacity: 1;
+    transition: opacity 0.28s 0.14s;
+  }
+
+  .vista small {
+    color: rgb(255 255 255 / 62%);
+    font-size: 0.72rem;
+  }
+
+  .vista-reposo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 205px;
+    height: 34px;
+    padding: 0;
+    white-space: nowrap;
+  }
+
+  .reloj {
+    position: relative;
+    font-size: 0.85rem;
+  }
+
+  .reloj em {
+    color: rgb(255 255 255 / 68%);
+    font-size: 0.72rem;
+    font-style: normal;
+  }
+
+  .ojos {
+    display: inline-flex;
+    gap: 6px;
+    animation: parpadeo 5s infinite;
+  }
+
+  .ojos i {
+    width: 6px;
+    height: 11px;
+    border-radius: 50%;
+    background: #fff7eb;
+    box-shadow: 0 0 7px rgb(255 247 235 / 75%);
+  }
+
+  @keyframes parpadeo {
+    0%, 17%, 21%, 100% { transform: scaleY(1); }
+    19% { transform: scaleY(0.08); }
+  }
+
+  .fila {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .caratula {
+    flex: none;
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--sol), var(--coral) 60%, var(--violeta));
+  }
+
+  .textos {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  .textos strong {
+    font-size: 0.98rem;
+  }
+
+  .textos span {
+    color: rgb(255 255 255 / 62%);
+    font-size: 0.8rem;
+  }
+
+  .barras {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 18px;
+  }
+
+  .barras i {
+    width: 3px;
+    height: 100%;
+    border-radius: 2px;
+    background: #fff;
+    animation: barra 0.8s ease-in-out infinite alternate;
+  }
+
+  .barras i:nth-child(2) { animation-duration: 0.6s; }
+  .barras i:nth-child(3) { animation-duration: 0.95s; }
+  .barras i:nth-child(4) { animation-duration: 0.7s; }
+
+  @keyframes barra {
+    from { transform: scaleY(0.3); }
+    to { transform: scaleY(1); }
+  }
+
+  .progreso {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .progreso span,
+  .barra-volumen {
+    display: block;
+    flex: 1;
+    overflow: hidden;
+    height: 4px;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 20%);
+  }
+
+  .progreso i,
+  .barra-volumen i {
+    display: block;
+    width: 38%;
+    height: 100%;
+    background: #fff;
+  }
+
+  .controles {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 8px;
+    font-size: 1.2rem;
+  }
+
+  .controles .grande {
+    font-size: 1.6rem;
+  }
+
+  .vista-letras {
+    padding-top: 14px;
+    text-align: center;
+  }
+
+  .vista-letras p {
+    margin: 0;
+  }
+
+  .vista-letras .cancion {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .vista-letras .tenue {
+    color: rgb(255 255 255 / 42%);
+    font-size: 0.82rem;
+  }
+
+  .vista-letras .actual {
+    margin-block: 6px;
+    background: linear-gradient(90deg, #ffc24d, #ff6a88);
+    background-clip: text;
+    color: transparent;
+    font-size: 1.22rem;
+    font-weight: 650;
+    line-height: 1.25;
+  }
+
+  .vista-pomodoro {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-block: 18px;
+  }
+
+  .anillo-grande {
+    position: relative;
+    flex: none;
+    width: 136px;
+    height: 136px;
+  }
+
+  svg .pista,
+  svg .trazo {
+    fill: none;
+    stroke-width: 8;
+  }
+
+  svg .pista {
+    stroke: rgb(255 255 255 / 15%);
+  }
+
+  svg .trazo {
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    transition: stroke-dasharray 0.7s var(--resorte);
+  }
+
+  .anillo-grande > div {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .anillo-grande b {
+    font-size: 1.7rem;
+    line-height: 1.1;
+  }
+
+  .lado {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .puntos {
+    display: flex;
+    gap: 5px;
+  }
+
+  .puntos i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 25%);
+  }
+
+  .puntos i.on {
+    background: #fff;
+  }
+
+  .pausar {
+    margin-top: 8px;
+    padding: 9px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--naranja), var(--coral));
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .vista-tareas strong {
+    font-size: 1.1rem;
+  }
+
+  .vista-tareas ul {
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .vista-tareas li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-block: 5px;
+    font-size: 0.92rem;
+  }
+
+  .vista-tareas li::before {
+    content: '';
+    flex: none;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid rgb(255 255 255 / 45%);
+    border-radius: 50%;
+  }
+
+  .vista-tareas li.hecha {
+    color: rgb(255 255 255 / 50%);
+    text-decoration: line-through;
+  }
+
+  .vista-tareas li.hecha::before {
+    border-color: transparent;
+    background: linear-gradient(135deg, var(--naranja), var(--coral));
+  }
+
+  .vista-notificacion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 96px;
+    padding-block: 0;
+  }
+
+  .icono-noti {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 15%);
+  }
+
+  .vista-volumen {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: min(300px, 100vw - 48px);
+    height: 44px;
+    padding-block: 0;
+    font-size: 0.9rem;
+  }
+
+  .barra-volumen i {
+    width: 65%;
+  }
+
+  .vista-sistema {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding-top: 26px;
+  }
+
+  .medidor {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .medidor svg {
+    width: 88px;
+    height: 88px;
+  }
+
+  .medidor b {
+    position: absolute;
+    top: 31px;
+    font-size: 1rem;
+  }
+
+  .selector {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .selector button {
+    padding: 8px 15px;
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    background: var(--blanco);
+    color: var(--suave);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .selector button:hover {
+    color: var(--app);
+  }
+
+  .selector button[aria-pressed='true'] {
+    border-color: var(--app);
+    color: var(--app);
+  }
+
+  .selector button:focus-visible {
+    outline: 2px solid var(--app);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 760px) {
+    .isla[data-estado='musica'],
+    .isla[data-estado='letras'],
+    .isla[data-estado='pomodoro'],
+    .isla[data-estado='tareas'],
+    .isla[data-estado='sistema'] {
+      --alto: 190px;
+    }
+
+    .vista-pomodoro .anillo-grande {
+      width: 104px;
+      height: 104px;
+    }
+
+    .medidor svg {
+      width: 72px;
+      height: 72px;
+    }
+
+    .medidor b {
+      top: 25px;
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .isla,
+    .isla *,
+    .vista {
+      animation: none !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>

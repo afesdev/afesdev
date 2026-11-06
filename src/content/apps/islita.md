@@ -33,7 +33,26 @@ funciones:
     texto: CPU, RAM, GPU y red en anillos y una gráfica.
   - titulo: Notificaciones y volumen
     texto: Banners y una barra de volumen, siempre en el mismo lugar.
-videos: []
+ejemplos:
+  - titulo: Suena una canción mientras trabajas
+    texto: Pausas o saltas a la siguiente desde la isla, sin dejar el documento en el que estás.
+  - titulo: Necesitas concentrarte
+    texto: Inicias un Pomodoro de 25 minutos y la píldora te muestra el tiempo sin que tengas que abrir nada.
+  - titulo: Copias varias cosas seguidas
+    texto: Vuelves a ese enlace o a ese texto que copiaste hace rato, sin perderlo con lo último que copiaste.
+  - titulo: Preparas un correo con archivos de varias carpetas
+    texto: Los sueltas en la bandeja a medida que los encuentras y luego los arrastras todos de una vez.
+  - titulo: Tu computador se pone lento
+    texto: Miras en la isla cuánta CPU y RAM se están usando, sin abrir el Administrador de tareas.
+  - titulo: Presentas o ves una película
+    texto: Al pasar a pantalla completa la isla se oculta sola y sus avisos no te interrumpen.
+videos:
+  - { archivo: musica, titulo: 'Música: la isla se abre con lo que está sonando' }
+  - { archivo: pomodoro, titulo: 'Pomodoro: pausar, reiniciar e iniciar' }
+  - { archivo: tareas, titulo: 'Tareas: al marcar una, baja y avanza el anillo' }
+  - { archivo: portapapeles, titulo: 'Portapapeles: quitar lo que ya no necesitas' }
+  - { archivo: bandeja, titulo: 'Bandeja: soltar un archivo en la isla' }
+  - { archivo: sistema, titulo: 'Sistema: CPU, RAM, GPU y red en vivo' }
 tecnologias: [C#, .NET, WinUI 3, Windows App SDK]
 seo:
   titulo: 'Islita: isla dinámica para Windows, en español'

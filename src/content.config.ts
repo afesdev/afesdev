@@ -25,6 +25,8 @@ const apps = defineCollection({
       pantallas: z.array(image()).min(2),
       capturas: z.array(z.object({ src: image(), titulo: z.string() })),
       funciones: z.array(z.object({ titulo: z.string(), texto: z.string() })),
+      // Situaciones concretas en las que sirve la app. Si no hay, no se muestra la sección.
+      ejemplos: z.array(z.object({ titulo: z.string(), texto: z.string() })).default([]),
       // Archivos en public/videos/<app>/ (cada .mp4 con su .jpg de portada)
       videos: z.array(z.object({ archivo: z.string(), titulo: z.string(), vertical: z.boolean().default(false) })),
       tecnologias: z.array(z.string()),
