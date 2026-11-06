@@ -1,0 +1,122 @@
+---
+// Temporizador hasta el fin de la prueba cerrada. No promete una fecha de salida:
+// después de la prueba, Google todavía tiene que revisar la app.
+interface Props {
+  fin: Date;
+}
+const { fin } = Astro.props;
+const fecha = new Intl.DateTimeFormat('es-CO', {
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'America/Bogota',
+}).format(fin);
+const unidades = [
+  ['dias', 'días'],
+  ['horas', 'horas'],
+  ['minutos', 'min'],
+  ['segundos', 'seg'],
+];
+---
+
+<div class="cuenta" data-cuenta data-fin={fin.toISOString()}>
+  <div data-en-curso>
+    <p class="titulo">La prueba cerrada termina en</p>
+    <div class="reloj" role="timer">
+      {
+        unidades.map(([id, nombre]) => (
+          <div class="unidad">
+            <b data-unidad={id}>--</b>
+            <span>{nombre}</span>
+          </div>
+        ))
+      }
+    </div>
+    <p class="nota">Termina el {fecha}. Después, Google revisa la app antes de publicarla en Play Store.</p>
+  </div>
+  <div data-terminada hidden>
+    <p class="titulo">La prueba cerrada ya terminó</p>
+    <p class="nota">Ahora falta la revisión de Google para publicarla en Play Store.</p>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cuenta]').forEach((cuenta) => {
+    const poner = (id: string, valor: number) => {
+      cuenta.querySelector(`[data-unidad="${id}"]`)!.textContent = String(valor).padStart(2, '0');
+    };
+
+    const actualizar = () => {
+      const resta = new Date(cuenta.dataset.fin!).getTime() - Date.now();
+      const terminada = resta <= 0;
+
+      cuenta.querySelector<HTMLElement>('[data-en-curso]')!.hidden = terminada;
+      cuenta.querySelector<HTMLElement>('[data-terminada]')!.hidden = !terminada;
+
+      if (terminada) {
+        return false;
+      }
+
+      const segundos = Math.floor(resta / 1000);
+      poner('dias', Math.floor(segundos / 86400));
+      poner('horas', Math.floor((segundos % 86400) / 3600));
+      poner('minutos', Math.floor((segundos % 3600) / 60));
+      poner('segundos', segundos % 60);
+      return true;
+    };
+
+    if (actualizar()) {
+      const reloj = setInterval(() => {
+        if (!actualizar()) {
+          clearInterval(reloj);
+        }
+      }, 1000);
+    }
+  });
+</script>
+
+<style>
+  .cuenta {
+    max-width: 440px;
+    margin-bottom: 24px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    background: rgba(5, 8, 15, 0.28);
+  }
+  .titulo {
+    margin: 0 0 12px;
+    font-weight: 800;
+  }
+  .reloj {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .unidad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 4px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .unidad b {
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .unidad span {
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.8;
+  }
+  .nota {
+    margin: 12px 0 0;
+    font-size: 14px;
+    opacity: 0.85;
+  }
+  [data-terminada] .titulo {
+    margin-bottom: 0;
+  }
+</style>

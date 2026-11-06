@@ -5,6 +5,8 @@ resumen: Gastos, presupuestos, metas y créditos en un solo lugar. Registra un g
 categoria: Finanzas
 orden: 2
 estado: en-prueba
+# 14 días de prueba cerrada, contando los 3 cumplidos el 5 de noviembre. Si la prueba se interrumpe, mueve esta fecha.
+pruebaTermina: '2026-11-16T23:59:00-05:00'
 # Cuando salga a producción: cambia estado a publicada y descomenta el enlace
 # playUrl: https://play.google.com/store/apps/details?id=com.afesdev.financially
 colores: { principal: '#0B6E4F', oscuro: '#0B3B2C', suave: '#E3F3EC' }

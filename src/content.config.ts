@@ -17,6 +17,8 @@ const apps = defineCollection({
       // 'publicada' muestra el botón de Google Play; 'en-prueba' muestra "Muy pronto"
       estado: z.enum(['publicada', 'en-prueba']),
       playUrl: z.string().optional(),
+      // Cuándo se cumplen los 14 días de prueba cerrada: muestra un temporizador en la página de la app
+      pruebaTermina: z.coerce.date().optional(),
       colores: z.object({ principal: z.string(), oscuro: z.string(), suave: z.string() }),
       icono: image(),
       destacado: image(),

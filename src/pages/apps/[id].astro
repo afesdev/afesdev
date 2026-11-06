@@ -5,6 +5,7 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Telefono from '../../components/Telefono.astro';
 import BotonPlay from '../../components/BotonPlay.astro';
+import CuentaRegresiva from '../../components/CuentaRegresiva.astro';
 import TarjetaApp from '../../components/TarjetaApp.astro';
 import Icono from '../../components/Icono.astro';
 import { redondear } from '../../data/sitio';
@@ -86,6 +87,7 @@ const datos = [
               </dl>
             )
           }
+          {d.pruebaTermina && d.estado === 'en-prueba' && <CuentaRegresiva fin={d.pruebaTermina} />}
           <BotonPlay app={app} />
         </div>
         {
@@ -463,6 +465,12 @@ const datos = [
   .ficha h3 {
     font-size: 20px;
     font-weight: 800;
+  }
+  /* El botón "Muy pronto" es blanco para el hero oscuro: sobre esta ficha clara no se vería */
+  .ficha :global(.pronto) {
+    background: var(--app-suave);
+    border-color: color-mix(in srgb, var(--app) 30%, transparent);
+    color: var(--app);
   }
   dl {
     margin: 16px 0 24px;
