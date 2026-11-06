@@ -12,6 +12,8 @@ const apps = defineCollection({
       resumen: z.string(),
       categoria: z.string(),
       orden: z.number(),
+      // Windows usa capturas horizontales sin marco de celular y no habla de Google Play
+      plataforma: z.enum(['Android', 'Windows']).default('Android'),
       // 'publicada' muestra el botón de Google Play; 'en-prueba' muestra "Muy pronto"
       estado: z.enum(['publicada', 'en-prueba']),
       playUrl: z.string().optional(),

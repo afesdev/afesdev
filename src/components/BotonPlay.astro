@@ -5,11 +5,19 @@ import Icono from './Icono.astro';
 interface Props {
   app: CollectionEntry<'apps'>;
 }
-const { estado, playUrl } = Astro.props.app.data;
+const { estado, playUrl, plataforma } = Astro.props.app.data;
 ---
 
 {
-  estado === 'publicada' && playUrl ? (
+  plataforma === 'Windows' ? (
+    <span class="play pronto">
+      <Icono nombre="reloj" tam={22} />
+      <span>
+        <small>Muy pronto para</small>
+        Windows
+      </span>
+    </span>
+  ) : estado === 'publicada' && playUrl ? (
     <a class="play" href={playUrl} target="_blank" rel="noopener">
       <Icono nombre="play" tam={22} />
       <span>

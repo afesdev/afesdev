@@ -7,7 +7,7 @@ interface Props {
   app: CollectionEntry<'apps'>;
 }
 const { app } = Astro.props;
-const { nombre, eslogan, resumen, categoria, estado, icono, destacado, colores } = app.data;
+const { nombre, eslogan, resumen, categoria, estado, icono, destacado, colores, plataforma } = app.data;
 ---
 
 <a class="tarjeta" href={`/apps/${app.id}`} style={`--app:${colores.principal};--app-suave:${colores.suave}`}>
@@ -20,7 +20,7 @@ const { nombre, eslogan, resumen, categoria, estado, icono, destacado, colores }
       <div>
         <h3>{nombre}</h3>
         <span class="meta">
-          {categoria} · {estado === 'publicada' ? 'En Google Play' : 'Muy pronto'}
+          {categoria} · {plataforma === 'Windows' ? 'Muy pronto para Windows' : estado === 'publicada' ? 'En Google Play' : 'Muy pronto'}
         </span>
       </div>
     </div>

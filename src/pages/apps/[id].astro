@@ -25,22 +25,24 @@ const otras = (await getCollection('apps')).filter((a) => a.id !== app.id).sort(
 const horizontales = d.videos.filter((v) => !v.vertical);
 const verticales = d.videos.filter((v) => v.vertical);
 const ruta = (archivo: string) => `/videos/${app.id}/${archivo}`;
+const esWindows = d.plataforma === 'Windows';
 
 // Datos estructurados para Google: la app y la ruta de migas (Inicio › Apps › App)
 const url = (camino: string) => new URL(camino, Astro.site).href;
 const datos = [
   {
     '@context': 'https://schema.org',
-    '@type': 'MobileApplication',
+    '@type': esWindows ? 'SoftwareApplication' : 'MobileApplication',
     name: d.nombre,
     description: d.resumen,
     url: url(`/apps/${app.id}/`),
     image: url(d.destacado.src),
-    operatingSystem: 'Android',
+    operatingSystem: d.plataforma,
     applicationCategory: d.tipoSchema,
     inLanguage: 'es',
     author: { '@id': url('/#afesdev') },
-    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    // Islita aún no tiene precio definido: no se le declara uno a Google
+    ...(esWindows ? {} : { offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }),
     ...(d.playUrl && d.estado === 'publicada' ? { installUrl: d.playUrl, downloadUrl: d.playUrl } : {}),
   },
   {
@@ -86,14 +88,23 @@ const datos = [
           }
           <BotonPlay app={app} />
         </div>
-        <div class="hero-visual">
-          <div class="tel tel-0">
-            <Telefono pantalla={d.pantallas[0]} alt={`Pantalla de ${d.nombre}`} ancho={250} carga="eager" />
-          </div>
-          <div class="tel tel-1">
-            <Telefono pantalla={d.pantallas[1]} alt={`Otra pantalla de ${d.nombre}`} ancho={230} carga="eager" />
-          </div>
-        </div>
+        {
+          esWindows ? (
+            <div class="hero-ventanas">
+              <Image src={d.pantallas[0]} alt={`Pantalla de ${d.nombre}`} width={960} loading="eager" />
+              <Image src={d.pantallas[1]} alt={`Otra pantalla de ${d.nombre}`} width={960} loading="eager" />
+            </div>
+          ) : (
+            <div class="hero-visual">
+              <div class="tel tel-0">
+                <Telefono pantalla={d.pantallas[0]} alt={`Pantalla de ${d.nombre}`} ancho={250} carga="eager" />
+              </div>
+              <div class="tel tel-1">
+                <Telefono pantalla={d.pantallas[1]} alt={`Otra pantalla de ${d.nombre}`} ancho={230} carga="eager" />
+              </div>
+            </div>
+          )
+        }
       </div>
     </section>
 
@@ -126,7 +137,7 @@ const datos = [
       <div class="galeria" tabindex="0" aria-label={`Capturas de ${d.nombre}`}>
         {
           d.capturas.map((c) => (
-            <a class="captura" href={c.src.src} target="_blank" rel="noopener">
+            <a class:list={['captura', { 'captura-ancha': esWindows }]} href={c.src.src} target="_blank" rel="noopener">
               <Image src={c.src} alt={c.titulo} width={540} />
             </a>
           ))
@@ -176,9 +187,9 @@ const datos = [
             <dt>Categoría</dt>
             <dd>{d.categoria}</dd>
             <dt>Plataforma</dt>
-            <dd>Android</dd>
+            <dd>{d.plataforma}</dd>
             <dt>Estado</dt>
-            <dd>{d.estado === 'publicada' ? 'Publicada en Google Play' : 'En prueba, muy pronto'}</dd>
+            <dd>{esWindows ? 'En desarrollo, muy pronto' : d.estado === 'publicada' ? 'Publicada en Google Play' : 'En prueba, muy pronto'}</dd>
             <dt>Hecha con</dt>
             <dd class="chips">{d.tecnologias.map((t) => <span class="chip">{t}</span>)}</dd>
           </dl>
@@ -308,6 +319,17 @@ const datos = [
     top: 50px;
     transform: rotate(6deg);
   }
+  .hero-ventanas {
+    display: grid;
+    gap: 18px;
+  }
+  .hero-ventanas :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 24px 50px rgba(5, 8, 15, 0.35);
+  }
   @media (max-width: 900px) {
     .hero-fila {
       grid-template-columns: 1fr;
@@ -387,6 +409,9 @@ const datos = [
   }
   .captura:hover {
     transform: translateY(-4px);
+  }
+  .captura-ancha {
+    width: clamp(300px, 40vw, 500px);
   }
 
   .video {
