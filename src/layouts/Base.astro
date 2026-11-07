@@ -4,6 +4,7 @@ import Logo from '../components/Logo.astro';
 import Icono from '../components/Icono.astro';
 import BotonWhatsApp from '../components/BotonWhatsApp.astro';
 import Redes from '../components/Redes.astro';
+import Analytics from '@vercel/analytics/astro';
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { sitio } from '../data/sitio';
@@ -94,6 +95,7 @@ const enApps = Astro.url.pathname.startsWith('/apps');
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
       rel="stylesheet"
     />
+    <Analytics />
   </head>
   <body>
     <header class="cabecera" data-cabecera>
