@@ -13,6 +13,10 @@ pantallas:
   - ../../assets/apps/islita/pantallas/pomodoro.png
   - ../../assets/apps/islita/pantallas/sistema.png
 capturas:
+  - { src: ../../assets/apps/islita/capturas/ajustes-pantallas.png, titulo: 'Ajustes: ordena y apaga las pantallas' }
+  - { src: ../../assets/apps/islita/capturas/ajustes-pomodoro.png, titulo: 'Ajustes: tu Pomodoro y cuánto dura un ciclo' }
+  - { src: ../../assets/apps/islita/capturas/ajustes-general.png, titulo: 'Ajustes: cómo se comporta sobre otras apps' }
+  - { src: ../../assets/apps/islita/capturas/ajustes-privacidad.png, titulo: 'Ajustes: qué sale de tu equipo y qué no' }
   - { src: ../../assets/apps/islita/capturas/pomodoro.png, titulo: Pomodoro con anillo de progreso }
   - { src: ../../assets/apps/islita/capturas/sistema.png, titulo: 'CPU, RAM y GPU de un vistazo' }
   - { src: ../../assets/apps/islita/capturas/portapapeles.png, titulo: Lo que copiaste siempre a mano }
@@ -33,6 +37,12 @@ funciones:
     texto: CPU, RAM, GPU y red en anillos y una gráfica.
   - titulo: Notificaciones y volumen
     texto: Banners y una barra de volumen, siempre en el mismo lugar.
+  - titulo: Batería de Bluetooth
+    texto: El nivel de tus audífonos y parlantes, con un aviso cuando esté bajo.
+  - titulo: Modo discreto
+    texto: Sobre una ventana maximizada se reduce a una línea fina y deja libres tus pestañas.
+  - titulo: Ajustes a tu medida
+    texto: Ordena las pantallas, apaga las que no uses y define tu Pomodoro.
 ejemplos:
   - titulo: Suena una canción mientras trabajas
     texto: Pausas o saltas a la siguiente desde la isla, sin dejar el documento en el que estás.
@@ -46,6 +56,8 @@ ejemplos:
     texto: Miras en la isla cuánta CPU y RAM se están usando, sin abrir el Administrador de tareas.
   - titulo: Presentas o ves una película
     texto: Al pasar a pantalla completa la isla se oculta sola y sus avisos no te interrumpen.
+  - titulo: Navegas con el navegador maximizado
+    texto: La isla se reduce a una línea fina para no tapar tus pestañas y vuelve cuando dejas el puntero sobre ella.
 videos:
   - { archivo: musica, titulo: 'Música: la isla se abre con lo que está sonando' }
   - { archivo: pomodoro, titulo: 'Pomodoro: pausar, reiniciar e iniciar' }

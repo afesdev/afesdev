@@ -461,6 +461,8 @@ const datos = [
   }
   .captura-ancha {
     width: clamp(300px, 40vw, 500px);
+    /* Las capturas de Windows no miden lo mismo: estiradas, las bajas dejarían un hueco vacío. */
+    align-self: center;
   }
 
   .video {
