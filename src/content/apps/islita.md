@@ -39,6 +39,10 @@ funciones:
     texto: Banners y una barra de volumen, siempre en el mismo lugar.
   - titulo: Batería de Bluetooth
     texto: El nivel de tus audífonos y parlantes, con un aviso cuando esté bajo.
+  - titulo: Colombia
+    texto: La TRM del día con su variación y cuánto falta para el próximo festivo.
+  - titulo: Micrófono y cámara
+    texto: Un punto de color te avisa cuando alguna aplicación los está usando.
   - titulo: Modo discreto
     texto: Sobre una ventana maximizada se reduce a una línea fina y deja libres tus pestañas.
   - titulo: Ajustes a tu medida
@@ -78,4 +82,4 @@ al pasar el mouse, se abre con música, tareas, notificaciones y lo que usas a
 diario, sin abrir otra ventana.
 
 Se oculta sola en pantalla completa y deja pasar tus clics fuera de la isla.
-Todavía está en desarrollo.
+Ya está en revisión para llegar a Microsoft Store.

@@ -238,7 +238,7 @@ const datos = [
             <dt>Plataforma</dt>
             <dd>{d.plataforma}</dd>
             <dt>Estado</dt>
-            <dd>{esWindows ? 'En desarrollo, muy pronto' : d.estado === 'publicada' ? 'Publicada en Google Play' : 'En prueba, muy pronto'}</dd>
+            <dd>{esWindows ? 'En revisión para Microsoft Store' : d.estado === 'publicada' ? 'Publicada en Google Play' : 'En prueba, muy pronto'}</dd>
             <dt>Hecha con</dt>
             <dd class="chips">{d.tecnologias.map((t) => <span class="chip">{t}</span>)}</dd>
           </dl>

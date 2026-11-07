@@ -23,11 +23,15 @@ interface Props {
 const { politica, app } = Astro.props;
 const d = app.data;
 const { Content } = await render(politica);
+// No todas las apps tienen cuentas: el atajo solo aparece si la política incluye esa sección.
+const tieneCuentas = politica.body?.includes('id="eliminar-cuenta"') ?? false;
 ---
 
 <Base
   titulo={`Política de privacidad de ${d.nombre}`}
-  descripcion={`Qué datos recopila ${d.nombre}, cómo los usamos y cómo eliminar tu cuenta.`}
+  descripcion={tieneCuentas
+    ? `Qué datos recopila ${d.nombre}, cómo los usamos y cómo eliminar tu cuenta.`
+    : `Qué datos usa ${d.nombre}, cuáles salen de tu equipo y cómo eliminarlos.`}
 >
   <div style={`--app:${d.colores.principal};--app-osc:${d.colores.oscuro};--app-suave:${d.colores.suave}`}>
     <section class="cabeza">
@@ -40,7 +44,7 @@ const { Content } = await render(politica);
             <p>{d.nombre} · Actualizada el {politica.data.actualizada}</p>
           </div>
         </div>
-        <a class="atajo" href="#eliminar-cuenta">¿Quieres eliminar tu cuenta? →</a>
+        {tieneCuentas && <a class="atajo" href="#eliminar-cuenta">¿Quieres eliminar tu cuenta? →</a>}
       </div>
     </section>
 
