@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Telefono from '../components/Telefono.astro';
 import TarjetaApp from '../components/TarjetaApp.astro';
@@ -8,6 +9,8 @@ import Redes from '../components/Redes.astro';
 import { sitio, servicios, proceso, tecnologias, redondear } from '../data/sitio';
 
 const apps = (await getCollection('apps')).sort((a, b) => a.data.orden - b.data.orden);
+const moviles = apps.filter((a) => a.data.plataforma !== 'Windows');
+const islita = apps.find((a) => a.id === 'islita');
 
 // Cifras reales: salen de los .md de cada app (campo cifras)
 const descargas = apps.reduce((suma, a) => suma + (a.data.cifras?.descargas ?? 0), 0);
@@ -51,11 +54,21 @@ const cifras = [
           <div><span class="f">PublicarEnPlay</span>(app); <span class="c">// ✓</span></div>
         </div>
         {
-          apps.slice(0, 2).map((app, i) => (
+          moviles.slice(0, 2).map((app, i) => (
             <div class={`tel tel-${i}`}>
               <Telefono pantalla={app.data.pantallas[0]} alt="" ancho={250} carga="eager" />
             </div>
           ))
+        }
+        {
+          islita && (
+            <div class="isla-grupo">
+              <div class="isla">
+                <Image src={islita.data.pantallas[0]} alt="" width={484} loading="eager" />
+              </div>
+              <Image class="isla-icono" src={islita.data.icono} alt="" width={144} loading="eager" />
+            </div>
+          )
         }
       </div>
     </div>
@@ -258,6 +271,40 @@ const cifras = [
     top: 0;
     transform: rotate(5deg);
   }
+  /* La captura trae el fondo de pantalla a los lados: se recorta para que solo quede la isla. */
+  .isla-grupo {
+    position: absolute;
+    z-index: 3;
+    right: -3%;
+    bottom: 44px;
+    width: 300px;
+    transform: rotate(3deg);
+  }
+  .isla {
+    aspect-ratio: 400 / 174;
+    overflow: hidden;
+    border-radius: 34px;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+  }
+  .isla-grupo :global(.isla-icono) {
+    position: absolute;
+    top: -52px;
+    left: -30px;
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    transform: rotate(-9deg);
+  }
+  .isla :global(img) {
+    display: block;
+    width: 121%;
+    max-width: none;
+    height: auto;
+    margin-left: -9.5%;
+  }
   .codigo {
     position: absolute;
     z-index: 2;
@@ -306,6 +353,9 @@ const cifras = [
     .tel-0 { left: 0; }
     .tel-1 { left: auto; right: 0; }
     .codigo { left: 0; font-size: 12px; }
+    .isla-grupo { right: 0; bottom: 120px; width: 230px; }
+    .isla { border-radius: 26px; }
+    .isla-grupo :global(.isla-icono) { top: -42px; left: -14px; width: 56px; height: 56px; border-radius: 16px; }
   }
 
   /* Franja de cifras: se monta sobre el borde inferior del hero */
