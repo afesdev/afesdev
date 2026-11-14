@@ -29,6 +29,7 @@ const horizontales = d.videos.filter((v) => !v.vertical);
 const verticales = d.videos.filter((v) => v.vertical);
 const ruta = (archivo: string) => `/videos/${app.id}/${archivo}`;
 const esWindows = d.plataforma === 'Windows';
+const enlaceTienda = d.estado === 'publicada' ? (esWindows ? d.storeUrl : d.playUrl) : undefined;
 
 // Datos estructurados para Google: la app y la ruta de migas (Inicio › Apps › App)
 const url = (camino: string) => new URL(camino, Astro.site).href;
@@ -44,9 +45,9 @@ const datos = [
     applicationCategory: d.tipoSchema,
     inLanguage: 'es',
     author: { '@id': url('/#afesdev') },
-    // Islita aún no tiene precio definido: no se le declara uno a Google
-    ...(esWindows ? {} : { offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }),
-    ...(d.playUrl && d.estado === 'publicada' ? { installUrl: d.playUrl, downloadUrl: d.playUrl } : {}),
+    // Todas las apps son gratis. Una app de Windows sin publicar aún no tiene precio que declararle a Google.
+    ...(esWindows && !enlaceTienda ? {} : { offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }),
+    ...(enlaceTienda ? { installUrl: enlaceTienda, downloadUrl: enlaceTienda } : {}),
   },
   {
     '@context': 'https://schema.org',
@@ -238,7 +239,11 @@ const datos = [
             <dt>Plataforma</dt>
             <dd>{d.plataforma}</dd>
             <dt>Estado</dt>
-            <dd>{esWindows ? 'En revisión para Microsoft Store' : d.estado === 'publicada' ? 'Publicada en Google Play' : 'En prueba, muy pronto'}</dd>
+            <dd>
+              {d.estado === 'publicada'
+                ? esWindows ? 'Publicada en Microsoft Store' : 'Publicada en Google Play'
+                : esWindows ? 'En desarrollo, muy pronto' : 'En prueba, muy pronto'}
+            </dd>
             <dt>Hecha con</dt>
             <dd class="chips">{d.tecnologias.map((t) => <span class="chip">{t}</span>)}</dd>
           </dl>

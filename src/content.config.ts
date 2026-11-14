@@ -14,9 +14,11 @@ const apps = defineCollection({
       orden: z.number(),
       // Windows usa capturas horizontales sin marco de celular y no habla de Google Play
       plataforma: z.enum(['Android', 'Windows']).default('Android'),
-      // 'publicada' muestra el botón de Google Play; 'en-prueba' muestra "Muy pronto"
+      // 'publicada' muestra el botón de su tienda; 'en-prueba' muestra "Muy pronto"
       estado: z.enum(['publicada', 'en-prueba']),
+      // Enlace de Google Play (Android) o de Microsoft Store (Windows), según la plataforma
       playUrl: z.string().optional(),
+      storeUrl: z.string().optional(),
       // Cuándo se cumplen los 14 días de prueba cerrada: muestra un temporizador en la página de la app
       pruebaTermina: z.coerce.date().optional(),
       colores: z.object({ principal: z.string(), oscuro: z.string(), suave: z.string() }),

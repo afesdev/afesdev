@@ -17,7 +17,7 @@ const descargas = apps.reduce((suma, a) => suma + (a.data.cifras?.descargas ?? 0
 const paises = Math.max(0, ...apps.map((a) => a.data.cifras?.paises ?? 0));
 const cifras = [
   { valor: String(apps.length), etiqueta: 'Apps creadas' },
-  { valor: String(apps.filter((a) => a.data.estado === 'publicada').length), etiqueta: 'Publicadas en Google Play' },
+  { valor: String(apps.filter((a) => a.data.estado === 'publicada').length), etiqueta: 'Apps publicadas' },
   { valor: redondear(descargas), etiqueta: 'Descargas' },
   { valor: String(paises), etiqueta: 'Países donde está disponible' },
 ];

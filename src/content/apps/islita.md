@@ -5,7 +5,8 @@ resumen: Una isla dinámica para Windows, en español. Música, letras, notifica
 categoria: Productividad
 orden: 3
 plataforma: Windows
-estado: en-prueba
+estado: publicada
+storeUrl: https://apps.microsoft.com/detail/9n9srjp3bfvr
 colores: { principal: '#C7364F', oscuro: '#1B1430', suave: '#FFF0E8' }
 icono: ../../assets/apps/islita/icono.png
 destacado: ../../assets/apps/islita/destacado.png
@@ -72,7 +73,7 @@ videos:
 tecnologias: [C#, .NET, WinUI 3, Windows App SDK]
 seo:
   titulo: 'Islita: isla dinámica para Windows, en español'
-  descripcion: 'Música, letras, notificaciones, Pomodoro, tareas y portapapeles en una isla arriba de tu pantalla. App para Windows, toda en español. Muy pronto.'
+  descripcion: 'Música, letras, notificaciones, Pomodoro, tareas y portapapeles en una isla arriba de tu pantalla. App gratis para Windows, en español, en Microsoft Store.'
 tipoSchema: UtilitiesApplication
 ---
 
@@ -82,4 +83,4 @@ al pasar el mouse, se abre con música, tareas, notificaciones y lo que usas a
 diario, sin abrir otra ventana.
 
 Se oculta sola en pantalla completa y deja pasar tus clics fuera de la isla.
-Ya está en revisión para llegar a Microsoft Store.
+Ya está disponible gratis en Microsoft Store.

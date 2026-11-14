@@ -20,7 +20,8 @@ const { nombre, eslogan, resumen, categoria, estado, icono, destacado, colores, 
       <div>
         <h3>{nombre}</h3>
         <span class="meta">
-          {plataforma === 'Windows' ? 'Windows' : categoria} · {estado === 'publicada' ? 'En Google Play' : 'Muy pronto'}
+          {plataforma === 'Windows' ? 'Windows' : categoria} ·{' '}
+          {estado === 'publicada' ? (plataforma === 'Windows' ? 'En Microsoft Store' : 'En Google Play') : 'Muy pronto'}
         </span>
       </div>
     </div>

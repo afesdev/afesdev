@@ -1,36 +1,31 @@
 ---
-// Botón de Google Play, o "Muy pronto" si la app sigue en prueba
+// Botón de descarga en la tienda de la app (Google Play o Microsoft Store), o "Muy pronto" si aún no salió
 import type { CollectionEntry } from 'astro:content';
 import Icono from './Icono.astro';
 interface Props {
   app: CollectionEntry<'apps'>;
 }
-const { estado, playUrl, plataforma } = Astro.props.app.data;
+const { estado, playUrl, storeUrl, plataforma } = Astro.props.app.data;
+const esWindows = plataforma === 'Windows';
+const tienda = esWindows ? 'Microsoft Store' : 'Google Play';
+const enlace = esWindows ? storeUrl : playUrl;
 ---
 
 {
-  plataforma === 'Windows' ? (
-    <span class="play pronto">
-      <Icono nombre="reloj" tam={22} />
+  estado === 'publicada' && enlace ? (
+    <a class="play" href={enlace} target="_blank" rel="noopener">
+      <Icono nombre={esWindows ? 'tienda' : 'play'} tam={22} />
       <span>
-        <small>Muy pronto para</small>
-        Windows
-      </span>
-    </span>
-  ) : estado === 'publicada' && playUrl ? (
-    <a class="play" href={playUrl} target="_blank" rel="noopener">
-      <Icono nombre="play" tam={22} />
-      <span>
-        <small>Disponible en</small>
-        Google Play
+        <small>{esWindows ? 'Descárgala gratis en' : 'Disponible en'}</small>
+        {tienda}
       </span>
     </a>
   ) : (
     <span class="play pronto">
       <Icono nombre="reloj" tam={22} />
       <span>
-        <small>Muy pronto en</small>
-        Google Play
+        <small>{esWindows ? 'Muy pronto para' : 'Muy pronto en'}</small>
+        {esWindows ? 'Windows' : tienda}
       </span>
     </span>
   )
