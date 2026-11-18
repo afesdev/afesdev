@@ -1,5 +1,5 @@
 ---
-actualizada: 7 de noviembre de 2026
+actualizada: 17 de noviembre de 2026
 ---
 
 Esta política explica qué información usa **Islita** (la "Aplicación"), una app
@@ -11,7 +11,11 @@ para Windows. Islita no tiene cuentas de usuario ni servidores propios.
   carpeta local de la Aplicación. De la bandeja solo se guarda la ruta de cada
   archivo, no el archivo.
 - **Barra de comandos:** lo que escribes se interpreta en tu equipo, sin
-  enviarlo a ningún servidor.
+  enviarlo a ningún servidor. Las cuentas y la hora en otras ciudades también se
+  calculan en tu equipo; las conversiones de moneda consultan las tasas como se
+  explica en la sección 2.
+- **Calendario y agua:** las tareas asignadas a cada día y los vasos de agua
+  anotados se guardan en la carpeta local de la Aplicación.
 - **Portapapeles:** el historial vive solo en la memoria y se borra al cerrar la
   Aplicación. Ignora el contenido que otras apps marcan como privado, como suelen
   hacer los gestores de contraseñas, y puedes pausarlo en cualquier momento.
@@ -33,7 +37,8 @@ ocurre con cada canción que suene. Ese servicio, como cualquier sitio web, tamb
 recibe tu dirección IP, y se rige por sus propias condiciones. Puedes apagar la
 función cuando quieras.
 
-Al abrir la pantalla del **dólar**, Islita consulta las tasas de cambio. Si tu
+Al abrir la pantalla del **dólar**, o al convertir monedas desde la barra de
+comandos (por ejemplo, «100 usd a cop»), Islita consulta las tasas de cambio. Si tu
 Windows está configurado en Colombia, consulta la TRM en los datos abiertos de
 [datos.gov.co](https://www.datos.gov.co). En los demás países, consulta las tasas
 de referencia de
@@ -46,6 +51,15 @@ Si en la barra de comandos pides una **búsqueda**, Islita la abre en tu navegad
 con Google. Desde ahí, la búsqueda se rige por las condiciones de Google y de tu
 navegador.
 
+El **asistente** está apagado hasta que pones tu propia clave de
+[Gemini](https://ai.google.dev). Cuando le preguntas algo, Islita envía tu pregunta
+y la conversación de esa sesión directamente a Google con tu clave, sin pasar por
+ningún servidor nuestro. Ese uso se rige por las condiciones de Gemini: con su
+plan gratuito, Google puede usar lo que envíes para mejorar sus productos, así que
+no compartas datos privados. Islita no guarda la conversación; se borra al cerrar
+la Aplicación. Tu clave se guarda cifrada en el Administrador de credenciales de
+Windows y solo se envía a Google.
+
 ## 3. Con quién compartimos tu información
 
 No recopilamos, vendemos ni compartimos tu información personal. Fuera de lo
@@ -56,7 +70,8 @@ descrito en la sección 2, la Aplicación no envía tus datos a internet.
 Tus datos están en tu equipo: al desinstalar la Aplicación se eliminan las tareas,
 los recordatorios, la bandeja y los ajustes. También puedes borrar tus tareas, la
 bandeja y el historial del portapapeles desde la propia Aplicación, y cancelar
-tus recordatorios desde la barra de comandos.
+tus recordatorios desde la barra de comandos. Para quitar tu clave de Gemini, usa
+el botón Quitar en Ajustes → Asistente.
 
 ## 5. Cambios a esta política
 

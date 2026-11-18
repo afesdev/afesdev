@@ -1,0 +1,409 @@
+---
+// Demostración del panel de Islita: el mismo diseño de la app, con datos de ejemplo.
+// Los íconos de la barra cambian de pantalla; sola, rota cada pocos segundos hasta que alguien la toca.
+// El panel mide 840 × 258 como en Windows y se escala al ancho disponible.
+---
+
+<div class="idemo" data-idemo>
+  <div class="idemo-marco">
+    <div class="idemo-escala" data-escala>
+      <div class="idemo-panel" data-panel aria-live="polite"></div>
+    </div>
+  </div>
+  <p class="idemo-pista" data-pista>Toca los íconos de la barra para cambiar de pantalla</p>
+</div>
+
+<script>
+  import { svg } from '../data/iconosIslita';
+
+  const anillo = (d: number, g: number, valor: number, colores: string[], centro = '') => {
+    const r = (d - g) / 2;
+    const c = 2 * Math.PI * r;
+    const id = 'a' + Math.random().toString(36).slice(2, 8);
+    return `<div class="anillo" style="width:${d}px;height:${d}px">
+      <svg width="${d}" height="${d}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">${colores
+        .map((t, i) => `<stop offset="${i / Math.max(colores.length - 1, 1)}" stop-color="${t}"/>`)
+        .join('')}</linearGradient></defs>
+        <circle cx="${d / 2}" cy="${d / 2}" r="${r}" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="${g}"/>
+        <circle class="arco" cx="${d / 2}" cy="${d / 2}" r="${r}" fill="none" stroke="url(#${id})" stroke-width="${g}" stroke-linecap="round" stroke-dasharray="${c * valor} ${c}"/></svg>
+      ${centro}</div>`;
+  };
+
+  const tarea = (texto: string, hecha = false, dia = '', tarde = false) =>
+    `<div class="fila${hecha ? ' hecha' : ''}"><span class="circulo${hecha ? ' si' : ''}">${hecha ? svg('check', 10, 3) : ''}</span><span class="txt">${texto}</span>${
+      dia ? `<span class="dia${tarde ? ' tarde' : ''}">${dia}</span>` : ''
+    }<span class="x">${svg('cerrar', 9)}</span></div>`;
+
+  // Cada pantalla: su contenido y lo que se ve escrito en la barra.
+  const PANTALLAS: Record<string, { html: () => string; escrito?: string; vista?: string }> = {
+    inicio: {
+      escrito: '100 usd a cop',
+      vista: '100 USD = 331.655,48 COP',
+      html: () => `<div class="area fila-tarjetas">
+        <div class="tarjeta musica-t">
+          <div class="etiqueta">Ahora suena</div>
+          <div class="cancion"><div class="caratula"></div><div><b>Luz de neón</b><small>Marea Alta</small></div></div>
+          <div class="abajo"><div class="progreso"><b style="width:62%"></b></div>
+            <div class="controles"><span>${svg('anterior', 14)}</span><span class="lleno">${svg('pausa', 14)}</span><span>${svg('siguiente', 14)}</span></div></div>
+        </div>
+        <div class="tarjeta hoy-t">
+          <div class="cab"><span class="etiqueta">Hoy</span><span class="etiqueta">3 pendientes</span></div>
+          <div class="lista-hoy">${[['Enviar la propuesta', 0], ['Revisar el correo', 0], ['Llamar a mamá', 0], ['Comprar café', 1]]
+            .map(([t, h]) => `<div class="mini-tarea${h ? ' hecha' : ''}"><span class="ok">${svg(h ? 'check' : 'check', 12, h ? 2.5 : 0)}</span>${t}</div>`)
+            .join('')}</div>
+          <div class="recordatorio">${svg('campana', 11)} 3:00 p. m. · Reunión de equipo</div>
+        </div>
+        <div class="columna">
+          <div class="tarjeta pomo-t">${anillo(34, 4, 0.64, ['#FF9F0A', '#FF9F0A'])}<div class="crece"><b class="grande">16:04</b><small>Enfoque</small></div><span class="redondo">${svg('pausa', 12)}</span></div>
+          <div class="tarjeta equipo-t">${anillo(42, 4, 0.23, ['#FFD60A', '#FF9F0A'], '<span class="pct">23%</span>')}${anillo(42, 4, 0.58, ['#FF9F0A', '#FF375F'], '<span class="pct">58%</span>')}<div><small>Dólar</small><b>$3.316</b></div></div>
+        </div>
+        <div class="tarjeta agua-t"><span class="etiqueta">Agua</span><div class="vaso"><b style="height:62%"></b></div><b>5/8</b>
+          <div class="controles"><span>${svg('menos', 10)}</span><span class="azul">${svg('mas', 10)}</span></div></div>
+      </div>`,
+    },
+    musica: {
+      html: () => `<div class="area mitades">
+        <div class="reproductor">
+          <div class="cancion grande-c"><div class="caratula"></div><div class="crece"><b>Luz de neón</b><small>Marea Alta</small></div>
+            <div class="ecualizador">${[10, 18, 13, 20, 8].map((h, i) => `<i style="height:${h}px;animation-delay:${i * 0.12}s"></i>`).join('')}</div></div>
+          <div class="tiempo"><small>2:31</small><div class="progreso gruesa"><b style="width:62%"></b></div><small>4:05</small></div>
+          <div class="botones"><span>${svg('anterior', 20)}</span><span>${svg('pausa', 24)}</span><span>${svg('siguiente', 20)}</span>
+            <span class="vol">${svg('musica', 14)}</span><div class="progreso crece"><b style="width:70%"></b></div><small>70 %</small></div>
+        </div>
+        <div class="letra">${[['La ciudad se apaga despacio', 0.35], ['y tú enciendes la noche', 0.55], ['luz de neón en tu mirada', 1], ['brillando hasta el amanecer', 0.55], ['no quiero que se acabe', 0.35]]
+          .map(([t, o]) => `<p style="opacity:${o}" class="${o === 1 ? 'actual' : ''}">${t}</p>`)
+          .join('')}</div>
+      </div>`,
+    },
+    tareas: {
+      escrito: 'tarea pagar la luz mañana',
+      vista: 'Agregar la tarea «pagar la luz» para mañana',
+      html: () => `<div class="area mitades">
+        <div class="color verde">
+          <div class="cab-color">${anillo(24, 3, 0.4, ['#30D158', '#40C8E0'])}<div class="crece"><b>Tareas</b><small>3 pendientes</small></div><span class="chip verde-c">2/5</span></div>
+          <div class="lista">${tarea('Enviar la propuesta', false, 'Hoy')}${tarea('Preparar la presentación', false, 'Mañana')}${tarea('Pagar el internet', false, 'vie 20', true)}${tarea('Comprar café', true)}</div>
+          <div class="caja">Nueva tarea<span class="mas-v">${svg('mas', 11)}</span></div>
+        </div>
+        <div class="color naranja pomodoro">
+          ${anillo(124, 9, 0.64, ['#FF9F0A', '#FF375F'], '<div class="centro"><b>16:04</b><small>Enfoque</small></div>')}
+          <div class="crece pila">
+            <span class="chip gris">Sesión 2 de 4 <i></i><i></i><i class="tenue"></i><i class="tenue"></i></span>
+            <span class="boton-fase">${svg('pausa', 14)} Pausar</span>
+            <div class="redondos"><span>${svg('siguiente', 13)}</span><span>${svg('reloj', 13)}</span><span>${svg('ajustes', 13)}</span></div>
+          </div>
+        </div>
+      </div>`,
+    },
+    calendario: {
+      escrito: 'tarea llamar al banco el lunes',
+      vista: 'Agregar la tarea «llamar al banco» para el lunes 30',
+      html: () => {
+        const dias: string[] = [];
+        const tareas: Record<number, string> = { 16: 'v', 18: 'v', 20: 'g', 24: 'v', 27: 'v' };
+        const recordatorios = [19, 23, 26];
+        for (let i = 0; i < 42; i++) {
+          const fuera = i < 6 || i > 35;
+          const d = i < 6 ? 26 + i : i > 35 ? i - 35 : i - 5;
+          const elegido = !fuera && d === 23;
+          dias.push(`<span class="d${fuera ? ' fuera' : ''}${elegido ? ' elegido' : ''}">${d}${!fuera && tareas[d] ? `<i class="p ${tareas[d]}"></i>` : ''}${
+            !fuera && recordatorios.includes(d) ? '<i class="p r"></i>' : ''
+          }</span>`);
+        }
+        return `<div class="area mitades">
+          <div class="color coral mes">
+            <div class="cab-mes"><b>Noviembre 2026</b><span class="redondo">${svg('anterior', 9)}</span><span class="chip coral-c">Hoy</span><span class="redondo">${svg('siguiente', 9)}</span></div>
+            <div class="semana">${['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'].map((n) => `<span>${n}</span>`).join('')}</div>
+            <div class="dias">${dias.join('')}</div>
+          </div>
+          <div class="color verde">
+            <div><b>Lunes 23 de noviembre</b><small>1 de 2 hechas · 1 recordatorio</small></div>
+            <span class="chip turquesa">${svg('campana', 10)} <b>3:00 p. m.</b> Reunión de equipo</span>
+            <div class="lista">${tarea('Enviar la propuesta')}${tarea('Comprar café', true)}</div>
+            <div class="caja">Tarea para este día<span class="mas-v">${svg('mas', 11)}</span></div>
+          </div>
+        </div>`;
+      },
+    },
+    portapapeles: {
+      html: () => `<div class="area lado">
+        <div class="color celeste resumen-c">
+          <div class="cab-color"><span class="icono-c celeste-i">${svg('portapapeles', 15)}</span><div><b>Portapapeles</b><small>4 elementos</small></div></div>
+          <small class="pista">Toca un elemento para volver a copiarlo. Los fijados se quedan al borrar.</small>
+          <div class="acciones"><span class="chip gris">${svg('pausa', 10)} Pausar</span><span class="redondo">${svg('cerrar', 10)}</span></div>
+        </div>
+        <div class="color neutro">
+          <div class="lista">${[['https://figma.com/file/propuesta-final', 'mundo'], ['Dirección: Calle 10 # 43-12, Medellín', 'portapapeles'], ['Reunión movida a las 3:00 p. m.', 'portapapeles'], ['captura-de-pantalla.png', 'carpeta']]
+            .map(([t, i], n) => `<div class="fila"><span class="icono-c celeste-i chico">${svg(i as 'mundo', 11)}</span><span class="txt">${t}</span>${n === 0 ? `<span class="fijo">${svg('chispa', 11)}</span>` : ''}<span class="x">${svg('cerrar', 9)}</span></div>`)
+            .join('')}</div>
+        </div>
+      </div>`,
+    },
+    sistema: {
+      html: () => `<div class="area mitades">
+        <div class="color amarillo">
+          <div class="cab-color"><span class="icono-c amarillo-i">${svg('sistema', 14)}</span><b>Equipo</b></div>
+          <div class="anillos">${anillo(74, 7, 0.23, ['#FFD60A', '#FF9F0A'], '<b>23%</b>')}${anillo(74, 7, 0.58, ['#FF9F0A', '#FF375F'], '<b>58%</b>')}${anillo(74, 7, 0.12, ['#FF375F', '#9E4DF2'], '<b>12%</b>')}</div>
+          <div class="nombres"><small>CPU</small><small>RAM · 9,3 GB</small><small>GPU</small></div>
+        </div>
+        <div class="color neutro">
+          <div class="cab-graf"><b>CPU en el último minuto</b><small class="baja">↓ 12,4 Mb/s</small><small class="sube">↑ 1,8 Mb/s</small></div>
+          <svg class="grafica" viewBox="0 0 300 100" preserveAspectRatio="none"><defs><linearGradient id="gcpu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(255,159,10,.45)"/><stop offset="1" stop-color="rgba(255,159,10,0)"/></linearGradient></defs>
+            <path d="M0 70 L20 64 L40 68 L60 52 L80 58 L100 40 L120 46 L140 30 L160 44 L180 38 L200 56 L220 48 L240 60 L260 42 L280 50 L300 45 L300 100 L0 100 Z" fill="url(#gcpu)"/>
+            <path d="M0 70 L20 64 L40 68 L60 52 L80 58 L100 40 L120 46 L140 30 L160 44 L180 38 L200 56 L220 48 L240 60 L260 42 L280 50 L300 45" fill="none" stroke="#FF9F0A" stroke-width="2"/></svg>
+        </div>
+      </div>`,
+    },
+    recordatorios: {
+      escrito: 'recuérdame llamar a mamá a las 7',
+      vista: 'Recordar «Llamar a mamá» hoy a las 7:00 p. m.',
+      html: () => `<div class="area">
+        <div class="color turquesa-f completo">
+          <div class="cab-color"><span class="icono-c turquesa-i">${svg('campana', 15)}</span><div><b>Recordatorios</b><small>4 pendientes</small></div></div>
+          <div class="rejilla">${[['Reunión de equipo', 'hoy a las 3:00 p. m.', 'campana'], ['Pasta en el horno', 'termina a las 1:12 p. m.', 'temporizador'], ['Llamar a mamá', 'hoy a las 7:00 p. m.', 'campana'], ['Pagar el arriendo', 'el lunes 30 a las 9:00 a. m.', 'campana']]
+            .map(([t, c, i]) => `<div class="pildora-r"><span class="icono-c turquesa-i chico">${svg(i as 'campana', 12)}</span><b class="crece">${t}</b><span class="chip turquesa">${c}</span><span class="x">${svg('cerrar', 9)}</span></div>`)
+            .join('')}</div>
+        </div>
+      </div>`,
+    },
+    asistente: {
+      escrito: 'pregunta qué le regalo a mi hermana',
+      vista: 'Preguntarle a la IA',
+      html: () => `<div class="area">
+        <div class="color morado completo chat">
+          <div class="cab-color"><span class="icono-c morado-i">${svg('chat', 15)}</span><b class="crece">Asistente</b><small>Gemini</small></div>
+          <div class="burbuja yo">Dame 3 ideas para una cena rápida</div>
+          <div class="burbuja ia">1. Tacos de pollo con aguacate (15 min)<br>2. Pasta con ajo, aceite y limón (12 min)<br>3. Arroz salteado con huevo y verduras (20 min)</div>
+        </div>
+      </div>`,
+    },
+  };
+
+  const ORDEN: [string, Parameters<typeof svg>[0], string][] = [
+    ['inicio', 'inicio', '#fff'],
+    ['musica', 'musica', '#FF375F'],
+    ['tareas', 'check', '#30D158'],
+    ['calendario', 'calendario', '#FF6B5E'],
+    ['portapapeles', 'portapapeles', '#64D2FF'],
+    ['sistema', 'sistema', '#FFD60A'],
+    ['recordatorios', 'campana', '#40C8E0'],
+    ['asistente', 'chat', '#BF5AF2'],
+  ];
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-idemo]')) {
+    const panel = raiz.querySelector<HTMLElement>('[data-panel]')!;
+    const escala = raiz.querySelector<HTMLElement>('[data-escala]')!;
+    const marco = escala.parentElement!;
+    let actual = 0;
+    let tocada = false;
+    let reloj: number | undefined;
+
+    const mostrar = (i: number) => {
+      actual = i;
+      const [id] = ORDEN[i];
+      const p = PANTALLAS[id];
+      panel.innerHTML = `
+        <div class="encabezado"><span class="nombre">Islita</span><span class="hora">9:41<small>a. m.</small><em>lun, 23 nov</em></span><span class="eng">${svg('ajustes', 13)}</span></div>
+        <div class="contenido">${p.html()}</div>
+        <div class="barra">
+          <div class="entrada"><span class="morado-t">${svg('chat', 13)}</span>${p.escrito ? `<span class="escrito">${p.escrito}</span><span class="vista">${p.vista}</span>` : '<span>Pregunta o escribe una orden…</span>'}</div>
+          <div class="accesos">${ORDEN.map(([nombre, icono, color], n) => `<button type="button" aria-label="${nombre}" aria-pressed="${n === i}" data-i="${n}" style="color:${color}" class="${n === i ? 'activo' : ''}">${svg(icono, 14)}</button>`).join('')}</div>
+        </div>`;
+    };
+
+    const ajustar = () => {
+      const factor = Math.min(marco.clientWidth / 840, 1.35);
+      escala.style.transform = `scale(${factor})`;
+      marco.style.height = `${258 * factor}px`;
+    };
+
+    panel.addEventListener('click', (e) => {
+      const boton = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-i]');
+      if (!boton) return;
+      tocada = true;
+      window.clearInterval(reloj);
+      raiz.querySelector('[data-pista]')?.classList.add('oculta');
+      mostrar(Number(boton.dataset.i));
+    });
+
+    mostrar(0);
+    ajustar();
+    new ResizeObserver(ajustar).observe(marco);
+
+    // Rota sola solo mientras se ve y nadie la ha tocado.
+    const animar = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    new IntersectionObserver(([entrada]) => {
+      window.clearInterval(reloj);
+      if (entrada.isIntersecting && !tocada && animar) {
+        reloj = window.setInterval(() => mostrar((actual + 1) % ORDEN.length), 4200);
+      }
+    }).observe(raiz);
+  }
+</script>
+
+<style is:global>
+  .idemo { --f: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif; }
+  .idemo-marco { position: relative; width: 100%; max-width: 1134px; margin: 0 auto; }
+  .idemo-escala { position: absolute; left: 50%; top: 0; width: 840px; transform-origin: top center; translate: -50% 0; }
+  .idemo-panel { width: 840px; height: 258px; border-radius: 0 0 36px 36px; background: #000; color: #fff; font-family: var(--f); position: relative; overflow: hidden; box-shadow: 0 40px 80px -20px rgba(255, 55, 95, 0.35), 0 30px 60px rgba(0, 0, 0, 0.45); line-height: 1.25; }
+  .idemo-pista { margin-top: 18px; text-align: center; font-size: 14px; color: var(--suave, #5b6478); transition: opacity 0.4s; }
+  .idemo-pista.oculta { opacity: 0; }
+  .idemo-panel b { font-weight: 600; }
+  .idemo-panel small { display: block; font-size: 11px; color: rgba(255, 255, 255, 0.6); }
+  .idemo-panel .encabezado { height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 6px 14px 0 22px; }
+  .idemo-panel .nombre { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.6); }
+  .idemo-panel .hora { font-size: 15px; font-weight: 600; }
+  .idemo-panel .hora small { display: inline; font-size: 10px; color: rgba(255, 255, 255, 0.8); margin-left: 2px; }
+  .idemo-panel .hora em { font-style: normal; font-size: 12px; font-weight: 400; color: rgba(255, 255, 255, 0.7); margin-left: 6px; }
+  .idemo-panel .eng { color: rgba(255, 255, 255, 0.7); display: grid; }
+  .idemo-panel .contenido { position: absolute; left: 16px; right: 16px; top: 36px; height: 172px; animation: idemo-entra 0.35s ease; }
+  @keyframes idemo-entra { from { opacity: 0; transform: translateY(6px); } }
+  .idemo-panel .area { height: 100%; display: flex; gap: 10px; }
+  .idemo-panel .mitades > * { flex: 1; min-width: 0; }
+  .idemo-panel .lado > :first-child { width: 220px; flex: none; }
+  .idemo-panel .lado > :last-child { flex: 1; min-width: 0; }
+  .idemo-panel .crece { flex: 1; min-width: 0; }
+  .idemo-panel .barra { position: absolute; left: 16px; right: 16px; bottom: 9px; height: 34px; display: flex; gap: 10px; align-items: center; }
+  .idemo-panel .entrada { flex: 1; min-width: 0; height: 34px; border-radius: 17px; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; gap: 10px; padding: 0 14px 0 13px; font-size: 13px; color: rgba(255, 255, 255, 0.5); white-space: nowrap; overflow: hidden; }
+  .idemo-panel .entrada .escrito { color: #fff; }
+  .idemo-panel .entrada .vista { margin-left: auto; font-size: 11px; color: rgba(255, 255, 255, 0.55); overflow: hidden; text-overflow: ellipsis; }
+  .idemo-panel .morado-t { color: #BF5AF2; display: grid; }
+  .idemo-panel .accesos { display: flex; gap: 2px; }
+  .idemo-panel .accesos button { width: 32px; height: 32px; border-radius: 16px; display: grid; place-items: center; border: 0; background: transparent; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .idemo-panel .accesos button:hover { background: rgba(255, 255, 255, 0.08); }
+  .idemo-panel .accesos button.activo { background: rgba(255, 255, 255, 0.14); }
+  .idemo-panel .accesos button:active { transform: scale(0.92); }
+  .idemo-panel .accesos button:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+
+  .idemo-panel .tarjeta { border-radius: 20px; background: rgba(255, 255, 255, 0.086); padding: 12px 14px; position: relative; min-width: 0; }
+  .idemo-panel .etiqueta { font-size: 11px; color: rgba(255, 255, 255, 0.6); }
+  .idemo-panel .musica-t { flex: 1.25; }
+  .idemo-panel .hoy-t, .idemo-panel .columna { flex: 1; }
+  .idemo-panel .columna { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .idemo-panel .columna .tarjeta { flex: 1; display: flex; align-items: center; gap: 8px; padding: 8px 12px; }
+  .idemo-panel .agua-t { width: 92px; flex: none; text-align: center; padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .idemo-panel .cancion { display: flex; gap: 12px; align-items: center; margin-top: 8px; }
+  .idemo-panel .cancion small { font-size: 12px; }
+  .idemo-panel .caratula { width: 58px; height: 58px; flex: none; border-radius: 12px; background: radial-gradient(circle at 30% 30%, #ffd36b 0 18%, transparent 19%), radial-gradient(circle at 70% 75%, #ff4d8d 0 30%, transparent 31%), linear-gradient(135deg, #2b1055, #7597de); }
+  .idemo-panel .abajo { position: absolute; left: 14px; right: 14px; bottom: 12px; }
+  .idemo-panel .progreso { height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.2); overflow: hidden; }
+  .idemo-panel .progreso b { display: block; height: 100%; background: #fff; border-radius: 2px; }
+  .idemo-panel .progreso.gruesa { height: 6px; flex: 1; }
+  .idemo-panel .controles { display: flex; justify-content: center; gap: 18px; margin-top: 6px; }
+  .idemo-panel .controles span, .idemo-panel .redondo { width: 30px; height: 30px; border-radius: 15px; display: grid; place-items: center; flex: none; }
+  .idemo-panel .controles .lleno, .idemo-panel .redondo { background: rgba(255, 255, 255, 0.14); }
+  .idemo-panel .agua-t .controles { gap: 4px; margin: 0; }
+  .idemo-panel .agua-t .controles span { width: 26px; height: 26px; }
+  .idemo-panel .controles .azul { background: rgba(10, 132, 255, 0.25); }
+  .idemo-panel .cab { display: flex; justify-content: space-between; }
+  .idemo-panel .lista-hoy { margin-top: 9px; display: flex; flex-direction: column; gap: 6px; }
+  .idemo-panel .mini-tarea { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .idemo-panel .mini-tarea .ok { width: 14px; height: 14px; border-radius: 7px; border: 1.5px solid #30D158; display: grid; place-items: center; color: #30D158; flex: none; }
+  .idemo-panel .mini-tarea.hecha { opacity: 0.5; }
+  .idemo-panel .mini-tarea.hecha .ok { border: 0; }
+  .idemo-panel .recordatorio { position: absolute; left: 14px; bottom: 12px; font-size: 11px; color: #40C8E0; display: flex; gap: 6px; align-items: center; }
+  .idemo-panel .grande { font-size: 15px; }
+  .idemo-panel .pct { font-size: 10px; font-weight: 600; }
+  .idemo-panel .vaso { width: 40px; height: 70px; border: 2px solid rgba(64, 200, 224, 0.5); border-radius: 4px 4px 12px 12px; padding: 3px; display: flex; align-items: flex-end; }
+  .idemo-panel .vaso b { display: block; width: 100%; border-radius: 2px 2px 9px 9px; background: linear-gradient(#64D2FF, #0A84FF); }
+
+  .idemo-panel .anillo { position: relative; display: grid; place-items: center; flex: none; }
+  .idemo-panel .anillo svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .idemo-panel .anillo .arco { animation: idemo-arco 0.9s ease; }
+  @keyframes idemo-arco { from { stroke-dasharray: 0 999; } }
+  .idemo-panel .anillo .centro { text-align: center; }
+  .idemo-panel .anillo .centro b { font-size: 28px; display: block; }
+  .idemo-panel .anillo .centro small { color: #FF9F0A; font-weight: 600; }
+
+  .idemo-panel .reproductor { padding: 4px 6px 0; display: flex; flex-direction: column; gap: 12px; }
+  .idemo-panel .grande-c { margin-top: 0; }
+  .idemo-panel .grande-c b { font-size: 16px; }
+  .idemo-panel .ecualizador { display: flex; gap: 3px; align-items: flex-end; height: 22px; }
+  .idemo-panel .ecualizador i { width: 3px; background: #fff; border-radius: 2px; animation: idemo-barra 0.9s ease-in-out infinite alternate; }
+  @keyframes idemo-barra { to { transform: scaleY(0.35); transform-origin: bottom; } }
+  .idemo-panel .tiempo, .idemo-panel .botones { display: flex; align-items: center; gap: 10px; }
+  .idemo-panel .botones span { width: 40px; height: 40px; display: grid; place-items: center; }
+  .idemo-panel .botones .vol { width: auto; margin-left: 10px; }
+  .idemo-panel .letra { display: flex; flex-direction: column; justify-content: center; gap: 9px; text-align: center; }
+  .idemo-panel .letra p { margin: 0; font-size: 15px; font-weight: 500; }
+  .idemo-panel .letra .actual { font-size: 19px; font-weight: 700; }
+
+  .idemo-panel .color { border-radius: 20px; padding: 12px 14px; border: 1px solid; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .idemo-panel .completo { flex: 1; }
+  .idemo-panel .verde { background: linear-gradient(135deg, rgba(48, 209, 88, 0.15), rgba(64, 200, 224, 0.05) 60%, rgba(255, 255, 255, 0.04)); border-color: rgba(48, 209, 88, 0.12); }
+  .idemo-panel .naranja { background: linear-gradient(135deg, rgba(255, 159, 10, 0.2), rgba(255, 159, 10, 0.05) 65%, rgba(255, 255, 255, 0.04)); border-color: rgba(255, 159, 10, 0.15); }
+  .idemo-panel .coral { background: linear-gradient(135deg, rgba(255, 69, 58, 0.15), rgba(255, 159, 10, 0.05) 60%, rgba(255, 255, 255, 0.04)); border-color: rgba(255, 69, 58, 0.12); }
+  .idemo-panel .celeste { background: linear-gradient(135deg, rgba(100, 210, 255, 0.15), rgba(100, 210, 255, 0.05) 60%, rgba(255, 255, 255, 0.04)); border-color: rgba(100, 210, 255, 0.12); }
+  .idemo-panel .amarillo { background: linear-gradient(135deg, rgba(255, 214, 10, 0.15), rgba(255, 214, 10, 0.05) 60%, rgba(255, 255, 255, 0.04)); border-color: rgba(255, 214, 10, 0.12); }
+  .idemo-panel .turquesa-f { background: linear-gradient(135deg, rgba(64, 200, 224, 0.15), rgba(64, 200, 224, 0.05) 60%, rgba(255, 255, 255, 0.04)); border-color: rgba(64, 200, 224, 0.12); }
+  .idemo-panel .morado { background: linear-gradient(135deg, rgba(158, 77, 242, 0.18), rgba(94, 92, 230, 0.05) 60%, rgba(255, 255, 255, 0.04)); border-color: rgba(158, 77, 242, 0.15); }
+  .idemo-panel .neutro { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.08); }
+  .idemo-panel .cab-color { display: flex; align-items: center; gap: 10px; }
+  .idemo-panel .chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; flex: none; align-self: flex-start; white-space: nowrap; }
+  .idemo-panel .verde-c { background: rgba(48, 209, 88, 0.15); color: #30D158; align-self: center; }
+  .idemo-panel .coral-c { background: rgba(255, 255, 255, 0.08); color: #FF6B5E; font-weight: 400; align-self: center; }
+  .idemo-panel .gris { background: rgba(255, 255, 255, 0.12); font-weight: 400; }
+  .idemo-panel .gris i { width: 7px; height: 7px; border-radius: 4px; background: #fff; }
+  .idemo-panel .gris i.tenue { opacity: 0.3; }
+  .idemo-panel .turquesa { background: rgba(64, 200, 224, 0.15); color: #40C8E0; font-weight: 400; font-size: 11px; }
+  .idemo-panel .turquesa b { color: #40C8E0; }
+  .idemo-panel .lista { flex: 1; margin: 0 -6px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .idemo-panel .fila { display: flex; align-items: center; gap: 10px; min-height: 26px; padding: 0 6px; border-radius: 10px; font-size: 13px; }
+  .idemo-panel .fila .txt { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .idemo-panel .fila.hecha { opacity: 0.5; }
+  .idemo-panel .fila.hecha .txt { text-decoration: line-through; }
+  .idemo-panel .fila .dia { font-size: 11px; color: rgba(255, 255, 255, 0.6); }
+  .idemo-panel .fila .dia.tarde { color: #FF453A; }
+  .idemo-panel .fila .x, .idemo-panel .pildora-r .x { color: rgba(255, 255, 255, 0.5); display: grid; }
+  .idemo-panel .fila .fijo { color: #64D2FF; display: grid; }
+  .idemo-panel .circulo { width: 20px; height: 20px; border-radius: 10px; border: 1.5px solid rgba(48, 209, 88, 0.5); display: grid; place-items: center; flex: none; }
+  .idemo-panel .circulo.si { border: 0; background: linear-gradient(135deg, #30D158, #40C8E0); }
+  .idemo-panel .caja { height: 32px; border-radius: 16px; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; padding: 0 3px 0 14px; font-size: 13px; color: rgba(255, 255, 255, 0.5); flex: none; }
+  .idemo-panel .mas-v { margin-left: auto; width: 26px; height: 26px; border-radius: 13px; display: grid; place-items: center; background: linear-gradient(135deg, #30D158, #40C8E0); color: #fff; }
+  .idemo-panel .pomodoro { flex-direction: row; align-items: center; gap: 16px; }
+  .idemo-panel .pila { display: flex; flex-direction: column; gap: 12px; }
+  .idemo-panel .boton-fase { height: 42px; border-radius: 21px; background: linear-gradient(135deg, #FF9F0A, #FF375F); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  .idemo-panel .redondos { display: flex; justify-content: center; gap: 10px; }
+  .idemo-panel .redondos span { width: 34px; height: 34px; border-radius: 17px; background: rgba(255, 255, 255, 0.14); display: grid; place-items: center; }
+  .idemo-panel .mes { padding: 10px 12px 8px; gap: 4px; }
+  .idemo-panel .cab-mes { display: flex; align-items: center; gap: 4px; }
+  .idemo-panel .cab-mes b { flex: 1; font-size: 14px; margin-left: 4px; }
+  .idemo-panel .cab-mes .redondo { width: 24px; height: 24px; }
+  .idemo-panel .semana, .idemo-panel .dias { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
+  .idemo-panel .semana { font-size: 10px; color: rgba(255, 255, 255, 0.5); }
+  .idemo-panel .dias { grid-auto-rows: 18.5px; }
+  .idemo-panel .d { position: relative; width: 34px; margin: 1px auto; border-radius: 9px; display: grid; place-items: center; font-size: 11px; }
+  .idemo-panel .d.fuera { opacity: 0.35; }
+  .idemo-panel .d.elegido { background: #FF453A; font-weight: 600; }
+  .idemo-panel .d .p { position: absolute; top: 2px; width: 4px; height: 4px; border-radius: 2px; }
+  .idemo-panel .d .p.v { right: 3px; background: #30D158; }
+  .idemo-panel .d .p.g { right: 3px; background: rgba(255, 255, 255, 0.5); }
+  .idemo-panel .d .p.r { left: 3px; background: #40C8E0; }
+  .idemo-panel .d.elegido .p { background: #fff; }
+  .idemo-panel .icono-c { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; flex: none; }
+  .idemo-panel .icono-c.chico { width: 24px; height: 24px; border-radius: 7px; }
+  .idemo-panel .celeste-i { background: rgba(100, 210, 255, 0.18); color: #64D2FF; }
+  .idemo-panel .amarillo-i { background: rgba(255, 214, 10, 0.18); color: #FFD60A; }
+  .idemo-panel .turquesa-i { background: rgba(64, 200, 224, 0.18); color: #40C8E0; }
+  .idemo-panel .morado-i { background: rgba(158, 77, 242, 0.25); color: #BF5AF2; }
+  .idemo-panel .resumen-c .pista { flex: 1; font-size: 11px; line-height: 1.4; display: flex; align-items: center; }
+  .idemo-panel .acciones { display: flex; gap: 6px; align-items: center; }
+  .idemo-panel .acciones .chip { align-self: center; }
+  .idemo-panel .anillos { display: flex; justify-content: space-around; flex: 1; align-items: center; }
+  .idemo-panel .anillos b { font-size: 14px; }
+  .idemo-panel .nombres { display: flex; justify-content: space-around; text-align: center; }
+  .idemo-panel .cab-graf { display: flex; gap: 12px; align-items: center; }
+  .idemo-panel .cab-graf b { flex: 1; font-size: 12px; }
+  .idemo-panel .baja { color: #30D158 !important; }
+  .idemo-panel .sube { color: #FF9F0A !important; }
+  .idemo-panel .grafica { flex: 1; width: 100%; }
+  .idemo-panel .rejilla { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .idemo-panel .pildora-r { height: 40px; border-radius: 14px; background: rgba(255, 255, 255, 0.08); display: flex; align-items: center; gap: 10px; padding: 0 10px; font-size: 13px; min-width: 0; }
+  .idemo-panel .pildora-r b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .idemo-panel .chat { gap: 8px; }
+  .idemo-panel .burbuja { max-width: 75%; padding: 7px 12px; font-size: 13px; line-height: 1.45; }
+  .idemo-panel .burbuja.yo { align-self: flex-end; border-radius: 14px 14px 4px 14px; background: linear-gradient(135deg, #9E4DF2, #5E5CE6); }
+  .idemo-panel .burbuja.ia { align-self: flex-start; border-radius: 14px 14px 14px 4px; background: rgba(255, 255, 255, 0.08); }
+  @media (prefers-reduced-motion: reduce) {
+    .idemo-panel .contenido, .idemo-panel .anillo .arco, .idemo-panel .ecualizador i { animation: none; }
+  }
+</style>

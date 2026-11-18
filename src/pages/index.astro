@@ -277,16 +277,13 @@ const cifras = [
     z-index: 3;
     right: -3%;
     bottom: 44px;
-    width: 300px;
+    width: 390px;
     transform: rotate(3deg);
   }
+  /* La isla abierta como panel: la imagen ya trae sus esquinas redondeadas y el fondo transparente. */
   .isla {
-    aspect-ratio: 400 / 174;
-    overflow: hidden;
-    border-radius: 34px;
-    background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+    aspect-ratio: 840 / 258;
+    filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.45));
   }
   .isla-grupo :global(.isla-icono) {
     position: absolute;
@@ -300,10 +297,8 @@ const cifras = [
   }
   .isla :global(img) {
     display: block;
-    width: 121%;
-    max-width: none;
+    width: 100%;
     height: auto;
-    margin-left: -9.5%;
   }
   .codigo {
     position: absolute;
@@ -353,8 +348,7 @@ const cifras = [
     .tel-0 { left: 0; }
     .tel-1 { left: auto; right: 0; }
     .codigo { left: 0; font-size: 12px; }
-    .isla-grupo { right: 0; bottom: 120px; width: 230px; }
-    .isla { border-radius: 26px; }
+    .isla-grupo { right: 0; bottom: 120px; width: 280px; }
     .isla-grupo :global(.isla-icono) { top: -42px; left: -14px; width: 56px; height: 56px; border-radius: 16px; }
   }
 

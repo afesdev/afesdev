@@ -1,0 +1,488 @@
+---
+// Página propia de Islita: oscura y con el estilo de la app. Los textos, capturas y videos salen de
+// src/content/apps/islita.md; las demás apps siguen con la plantilla [id].astro.
+import { getCollection, getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import BotonPlay from '../../components/BotonPlay.astro';
+import ClipsVideo from '../../components/ClipsVideo.astro';
+import IslaPanelDemo from '../../components/IslaPanelDemo.astro';
+import TarjetaApp from '../../components/TarjetaApp.astro';
+import Icono from '../../components/Icono.astro';
+import { svg, type NombreIcono } from '../../data/iconosIslita';
+
+const app = (await getEntry('apps', 'islita'))!;
+const d = app.data;
+const { Content } = await render(app);
+const politica = await getEntry('privacidad', 'islita');
+const otras = (await getCollection('apps')).filter((a) => a.id !== 'islita').sort((a, b) => a.data.orden - b.data.orden);
+
+// Un ícono y un color por función, en el mismo orden que en islita.md.
+const estiloFunciones: [NombreIcono, string][] = [
+  ['panel', '#FF9F0A'], ['musica', '#FF375F'], ['calendario', '#FF6B5E'], ['temporizador', '#FF9F0A'],
+  ['teclado', '#BF5AF2'], ['rayo', '#FFD60A'], ['gota', '#40C8E0'], ['chispa', '#9E4DF2'],
+  ['portapapeles', '#64D2FF'], ['sistema', '#FFD60A'], ['campana', '#0A84FF'], ['dinero', '#30D158'],
+  ['paleta', '#FF6FD8'], ['oculto', '#AEAEB2'],
+];
+
+const destacados = [
+  {
+    antetitulo: 'Calendario',
+    titulo: 'Tu semana, de un vistazo',
+    texto: 'Asigna cada tarea a su día, muévela arrastrando o con clic derecho y mira tus recordatorios en el mes. La tarjeta Hoy del panel te muestra solo lo de hoy.',
+    puntos: ['Puntos de color en los días con tareas y recordatorios', '«tarea pagar la luz mañana» desde la barra', 'Las atrasadas se marcan en rojo'],
+    captura: d.capturas[3],
+    color: '#FF6B5E',
+  },
+  {
+    antetitulo: 'Funciones rápidas',
+    titulo: 'Escribe lo que necesitas, y listo',
+    texto: 'Con Ctrl+Alt+I, o desde la barra del panel, Islita entiende frases cortas en español. El resultado aparece mientras escribes y Enter lo copia.',
+    puntos: ['Cuentas y porcentajes: «15% de 230»', 'Divisas con la tasa del día: «100 usd a cop»', 'La hora en otra ciudad: «hora en Madrid»'],
+    captura: d.capturas[4],
+    color: '#0A84FF',
+  },
+  {
+    antetitulo: 'Asistente con IA',
+    titulo: 'Pregúntale sin cambiar de ventana',
+    texto: 'Escribe tu duda en la barra y Gemini te responde dentro de la isla. Usas tu propia clave gratuita de Google, que se guarda cifrada en tu equipo.',
+    puntos: ['Respuestas breves que aparecen mientras se escriben', 'Opcional: está apagado hasta que pones tu clave', 'La conversación se borra al cerrar la app'],
+    captura: d.capturas[5],
+    color: '#BF5AF2',
+  },
+  {
+    antetitulo: 'Temas',
+    titulo: 'Hazla tuya',
+    texto: 'Seis temas cambian el fondo, el borde y el resplandor de la isla con un clic. Y en el inicio del panel eliges qué tarjetas ver.',
+    puntos: ['Medianoche, Océano, Atardecer, Bosque, Lavanda y Grafito', 'Con música, el resplandor toma el color de la carátula', 'Tres tamaños: Normal, Grande y Muy grande'],
+    captura: d.capturas[6],
+    color: '#FF6FD8',
+  },
+];
+
+const ordenes = [
+  ['temporizador', 'temporizador 10 min', 'Temporizador de 10 min'],
+  ['campana', 'recuérdame llamar a mamá a las 7', 'Recordar «Llamar a mamá» hoy a las 7:00 p. m.'],
+  ['check', 'tarea comprar pan mañana', 'Agregar la tarea «comprar pan» para mañana'],
+  ['reloj', 'concentración 50', 'Concentración de 50 min'],
+  ['calculadora', '1200 * 3', '= 3.600'],
+  ['dinero', '50 euros a dólares', '50 EUR = 55,04 USD'],
+  ['mundo', 'hora en Tokio', 'En Tokio son las 11:41 p. m. · 14 h más que aquí'],
+  ['gota', 'agua cada 45 min', 'Recordarte tomar agua cada 45 min'],
+] as [NombreIcono, string, string][];
+
+const privacidad: [NombreIcono, string, string][] = [
+  ['sinCuenta', 'Sin cuentas', 'No te registras ni inicias sesión. Abres la app y funciona.'],
+  ['candado', 'Tus datos en tu equipo', 'Tareas, calendario, recordatorios y ajustes se guardan en tu computador.'],
+  ['escudo', 'Sin servidores propios', 'Islita no tiene servidores. Solo consulta tasas de cambio, letras o Gemini cuando tú lo pides.'],
+];
+
+const preguntas = [
+  ['¿Es gratis?', 'Sí. Islita se descarga gratis en Microsoft Store y no tiene anuncios.'],
+  ['¿En qué versiones de Windows funciona?', 'En Windows 10 (versión 1809 o posterior) y Windows 11, en equipos x64 y ARM.'],
+  ['¿Tapa mis pestañas o mis videos?', 'No. Sobre una ventana maximizada se reduce a una línea fina, y en pantalla completa se oculta sola y silencia sus avisos.'],
+  ['¿Cuánto cuesta el asistente con IA?', 'Nada para Islita: usas tu propia clave de Gemini, que Google ofrece gratis con límites de uso. Es opcional.'],
+  ['¿Funciona con Spotify y YouTube?', 'Sí. Muestra lo que suena en cualquier reproductor que informe a Windows, como Spotify, YouTube en el navegador o la app de Música.'],
+  ['¿Está en inglés?', 'Está en español y en inglés; el idioma se cambia en Ajustes.'],
+];
+
+const url = (camino: string) => new URL(camino, Astro.site).href;
+const datos = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: d.nombre,
+    description: d.resumen,
+    url: url('/apps/islita/'),
+    image: url(d.destacado.src),
+    operatingSystem: 'Windows',
+    applicationCategory: d.tipoSchema,
+    inLanguage: ['es', 'en'],
+    author: { '@id': url('/#afesdev') },
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    ...(d.storeUrl ? { installUrl: d.storeUrl, downloadUrl: d.storeUrl } : {}),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: preguntas.map(([p, r]) => ({ '@type': 'Question', name: p, acceptedAnswer: { '@type': 'Answer', text: r } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: url('/') },
+      { '@type': 'ListItem', position: 2, name: 'Apps', item: url('/apps/') },
+      { '@type': 'ListItem', position: 3, name: d.nombre, item: url('/apps/islita/') },
+    ],
+  },
+];
+---
+
+<Base tituloSeo={d.seo.titulo} descripcion={d.seo.descripcion} imagen={d.destacado} datos={datos}>
+  <div class="islita">
+    <!-- Portada: la isla cuelga del borde de arriba, como en la pantalla. -->
+    <section class="portada">
+      <div class="brillo b1"></div>
+      <div class="brillo b2"></div>
+      <div class="contenedor">
+        <a class="volver" href="/#apps">← Todas las apps</a>
+        <div class="titular">
+          <span class="marca"><Image src={d.icono} alt="" width={64} loading="eager" />Islita · para Windows</span>
+          <h1>Tu escritorio ya tiene <em>isla</em></h1>
+          <p class="bajada">{d.resumen}</p>
+          <div class="acciones">
+            <BotonPlay app={app} />
+            <a class="secundario" href="#demo">Pruébala aquí <Icono nombre="flecha" tam={18} /></a>
+          </div>
+          <ul class="sellos">
+            <li><Fragment set:html={svg('check', 14, 2.5)} /> Gratis</li>
+            <li><Fragment set:html={svg('check', 14, 2.5)} /> Windows 10 y 11</li>
+            <li><Fragment set:html={svg('check', 14, 2.5)} /> En español</li>
+            <li><Fragment set:html={svg('check', 14, 2.5)} /> Sin cuentas</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pantalla" aria-hidden="true">
+        <Image class="panel" src={d.pantallas[0]} alt="" width={1680} loading="eager" />
+      </div>
+    </section>
+
+    <!-- Demostración -->
+    <section class="seccion oscura" id="demo">
+      <div class="contenedor centrado">
+        <span class="antetitulo">Pruébala aquí</span>
+        <h2 class="titulo-seccion">Así se abre cuando acercas el mouse</h2>
+        <p class="intro-seccion">Una demostración con datos de ejemplo. Cambia sola hasta que la toques.</p>
+      </div>
+      <div class="contenedor-demo"><IslaPanelDemo /></div>
+    </section>
+
+    <!-- Funciones -->
+    <section class="seccion">
+      <div class="contenedor">
+        <span class="antetitulo">Funciones</span>
+        <h2 class="titulo-seccion">Todo lo que usas a diario, en un solo lugar</h2>
+        <div class="funciones">
+          {
+            d.funciones.map((f, i) => {
+              const [icono, color] = estiloFunciones[i % estiloFunciones.length];
+              return (
+                <article class="funcion" style={`--c:${color}`}>
+                  <span class="icono-f" set:html={svg(icono, 20)} />
+                  <h3>{f.titulo}</h3>
+                  <p>{f.texto}</p>
+                </article>
+              );
+            })
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Destacados: texto y captura alternados -->
+    {
+      destacados.map((x, i) => (
+        <section class:list={['seccion', 'destacado', { invertido: i % 2 === 1, 'fondo-blanco': i % 2 === 0 }]} style={`--c:${x.color}`}>
+          <div class="contenedor fila-destacado">
+            <div class="texto-destacado">
+              <span class="antetitulo">{x.antetitulo}</span>
+              <h2 class="titulo-seccion">{x.titulo}</h2>
+              <p>{x.texto}</p>
+              <ul>
+                {x.puntos.map((p) => (
+                  <li><span set:html={svg('check', 14, 2.5)} />{p}</li>
+                ))}
+              </ul>
+            </div>
+            <a class="imagen-destacado" href={x.captura.src.src} target="_blank" rel="noopener">
+              <Image src={x.captura.src} alt={x.captura.titulo} width={1100} />
+            </a>
+          </div>
+        </section>
+      ))
+    }
+
+    <!-- Órdenes de ejemplo -->
+    <section class="seccion oscura">
+      <div class="contenedor">
+        <span class="antetitulo">Barra de comandos</span>
+        <h2 class="titulo-seccion">Pide las cosas como las dirías</h2>
+        <p class="intro-seccion">Pulsa Ctrl+Alt+I desde cualquier app, escribe y mira qué pasará antes de pulsar Enter.</p>
+        <div class="ordenes">
+          {
+            ordenes.map(([icono, orden, resultado]) => (
+              <div class="orden">
+                <span class="icono-o" set:html={svg(icono, 16)} />
+                <div>
+                  <code>{orden}</code>
+                  <small>{resultado}</small>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Ejemplos -->
+    <section class="seccion">
+      <div class="contenedor">
+        <span class="antetitulo">En tu día a día</span>
+        <h2 class="titulo-seccion">Cuándo te sirve</h2>
+        <div class="ejemplos">
+          {
+            d.ejemplos.map((e) => (
+              <article>
+                <h3>{e.titulo}</h3>
+                <p>{e.texto}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Galería -->
+    <section class="seccion fondo-suave">
+      <div class="contenedor">
+        <span class="antetitulo">Capturas</span>
+        <h2 class="titulo-seccion">Así se ve</h2>
+        <p class="intro-seccion">Desliza para ver todas. Toca una para verla en grande.</p>
+      </div>
+      <div class="galeria" tabindex="0" aria-label="Capturas de Islita">
+        {
+          d.capturas.map((c) => (
+            <a class="captura" href={c.src.src} target="_blank" rel="noopener">
+              <Image src={c.src} alt={c.titulo} width={720} />
+              <span>{c.titulo}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      d.videos.length > 0 && (
+        <section class="seccion">
+          <div class="contenedor">
+            <span class="antetitulo">Videos</span>
+            <h2 class="titulo-seccion">Grabada en un equipo real</h2>
+            <p class="intro-seccion">Clips cortos de la app funcionando en Windows, sin audio.</p>
+            <ClipsVideo app="islita" videos={d.videos} />
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Privacidad -->
+    <section class="seccion oscura">
+      <div class="contenedor">
+        <span class="antetitulo">Privacidad</span>
+        <h2 class="titulo-seccion">Lo tuyo se queda en tu equipo</h2>
+        <div class="privacidad">
+          {
+            privacidad.map(([icono, titulo, texto]) => (
+              <article>
+                <span class="icono-p" set:html={svg(icono, 22)} />
+                <h3>{titulo}</h3>
+                <p>{texto}</p>
+              </article>
+            ))
+          }
+        </div>
+        {politica && <a class="enlace-politica" href="/apps/islita/privacidad">Lee la política de privacidad completa →</a>}
+      </div>
+    </section>
+
+    <!-- Preguntas -->
+    <section class="seccion fondo-blanco">
+      <div class="contenedor preguntas-fila">
+        <div>
+          <span class="antetitulo">Sobre Islita</span>
+          <h2 class="titulo-seccion">Hecha para Windows, en español</h2>
+          <div class="prosa"><Content /></div>
+        </div>
+        <div class="preguntas">
+          <h3 class="titulo-preguntas">Preguntas frecuentes</h3>
+          {
+            preguntas.map(([p, r], i) => (
+              <details open={i === 0}>
+                <summary>{p}</summary>
+                <p>{r}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Cierre -->
+    <section class="cierre">
+      <div class="brillo b3"></div>
+      <div class="contenedor centrado">
+        <Image class="icono-cierre" src={d.icono} alt="Ícono de Islita" width={192} />
+        <h2>Dale una isla a tu escritorio</h2>
+        <p>Gratis en Microsoft Store, para Windows 10 y 11.</p>
+        <BotonPlay app={app} />
+        <small class="tecnica">Hecha con {d.tecnologias.join(', ')}.</small>
+      </div>
+    </section>
+
+    {
+      otras.length > 0 && (
+        <section class="seccion">
+          <div class="contenedor">
+            <span class="antetitulo">Más apps</span>
+            <h2 class="titulo-seccion">También te puede interesar</h2>
+            <div class="otras">{otras.map((a) => <TarjetaApp app={a} />)}</div>
+            <div class="cta">
+              <p>¿Quieres una app como esta para tu idea o tu negocio?</p>
+              <a class="boton boton-coral" href="/#contacto">Hablemos <Icono nombre="flecha" tam={20} /></a>
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .islita {
+    --noche-islita: #0b0912;
+    --atardecer: linear-gradient(90deg, #ff9f0a, #ff375f 55%, #bf5af2);
+  }
+
+  /* ---------- Portada ---------- */
+  .portada {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    background: radial-gradient(120% 80% at 50% 0%, #2a1640 0%, var(--noche-islita) 60%);
+    /* La cabecera del sitio es fija y transparente: el contenido empieza debajo. */
+    padding: calc(var(--alto-cabecera) + 22px) 0 0;
+  }
+  .brillo { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.5; pointer-events: none; }
+  .b1 { width: 560px; height: 560px; left: -180px; top: 120px; background: #ff9f0a; opacity: 0.32; }
+  .b2 { width: 620px; height: 620px; right: -200px; top: 60px; background: #bf5af2; opacity: 0.38; }
+  .b3 { width: 700px; height: 500px; left: 50%; top: 40%; translate: -50% -50%; background: #ff375f; opacity: 0.3; }
+  .volver { position: relative; color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .volver:hover { color: #fff; }
+  .titular { position: relative; text-align: center; max-width: 860px; margin: 28px auto 0; }
+  .marca { display: inline-flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); font-size: 14px; font-weight: 700; color: rgba(255, 255, 255, 0.85); }
+  .marca :global(img) { width: 30px; height: 30px; border-radius: 9px; }
+  h1 { margin: 22px 0 0; font-size: clamp(40px, 6.4vw, 76px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; }
+  h1 em { font-style: normal; background: var(--atardecer); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .bajada { margin: 20px auto 0; max-width: 680px; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.55; color: rgba(255, 255, 255, 0.72); }
+  .acciones { margin-top: 30px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; align-items: center; }
+  .secundario { display: inline-flex; align-items: center; gap: 8px; padding: 14px 22px; border-radius: 14px; color: #fff; text-decoration: none; font-weight: 700; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); transition: background 0.2s; }
+  .secundario:hover { background: rgba(255, 255, 255, 0.14); }
+  .sellos { list-style: none; padding: 0; margin: 26px 0 0; display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; font-size: 14px; color: rgba(255, 255, 255, 0.72); }
+  .sellos li { display: inline-flex; align-items: center; gap: 6px; }
+  .sellos :global(svg) { color: #30d158; }
+  .pantalla {
+    position: relative;
+    width: min(1180px, 94vw);
+    margin: 56px auto 0;
+    padding-top: 0;
+    border-radius: 28px 28px 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 0;
+    background:
+      radial-gradient(700px 400px at 18% 100%, rgba(255, 122, 61, 0.75), transparent 70%),
+      radial-gradient(700px 420px at 85% 100%, rgba(184, 77, 255, 0.75), transparent 70%),
+      linear-gradient(180deg, #1b1230, #2a1640);
+    height: clamp(220px, 30vw, 380px);
+    overflow: hidden;
+    box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.5);
+  }
+  .pantalla :global(.panel) {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 88%;
+    height: auto;
+    translate: -50% 0;
+    filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.55));
+    animation: baja 1s cubic-bezier(0.2, 0.9, 0.3, 1.15) both 0.2s;
+  }
+  @keyframes baja { from { transform: translateY(-30%) scale(0.6); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .pantalla :global(.panel) { animation: none; } }
+
+  /* ---------- Secciones ---------- */
+  .oscura { background: var(--noche-islita); color: #fff; }
+  .oscura :global(.titulo-seccion) { color: #fff; }
+  .oscura :global(.intro-seccion) { color: rgba(255, 255, 255, 0.66); }
+  .oscura :global(.antetitulo) { color: #ff9f6b; }
+  .centrado { text-align: center; }
+  .centrado :global(.intro-seccion), .centrado :global(.titulo-seccion) { margin-left: auto; margin-right: auto; }
+  .contenedor-demo { width: min(1180px, 94vw); margin: 34px auto 0; }
+
+  .funciones { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; margin-top: 30px; }
+  .funcion { background: #fff; border: 1px solid var(--borde); border-radius: 20px; padding: 22px; transition: transform 0.2s, box-shadow 0.2s; }
+  .funcion:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(16, 24, 40, 0.08); }
+  .icono-f { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
+  .funcion h3 { margin: 14px 0 6px; font-size: 17px; }
+  .funcion p { margin: 0; color: var(--suave); font-size: 15px; line-height: 1.5; }
+
+  .fila-destacado { display: grid; grid-template-columns: 1fr 1.25fr; gap: 56px; align-items: center; }
+  .invertido .texto-destacado { order: 2; }
+  .texto-destacado p { color: var(--suave); font-size: 17px; line-height: 1.6; }
+  .texto-destacado ul { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 10px; }
+  .texto-destacado li { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; }
+  .texto-destacado li span { flex: none; width: 22px; height: 22px; border-radius: 11px; display: grid; place-items: center; color: var(--c); background: color-mix(in srgb, var(--c) 15%, transparent); margin-top: 1px; }
+  .destacado :global(.antetitulo) { color: var(--c); }
+  .imagen-destacado { display: block; border-radius: 22px; overflow: hidden; box-shadow: 0 30px 60px -12px rgba(16, 24, 40, 0.35); transition: transform 0.25s; }
+  .imagen-destacado:hover { transform: scale(1.01); }
+  .imagen-destacado :global(img) { display: block; width: 100%; height: auto; }
+
+  .ordenes { margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .orden { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border-radius: 18px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); }
+  .icono-o { flex: none; width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: rgba(191, 90, 242, 0.18); color: #d6a6ff; }
+  .orden code { font-family: var(--mono); font-size: 14px; color: #fff; }
+  .orden small { display: block; margin-top: 3px; color: rgba(255, 255, 255, 0.6); font-size: 13px; }
+
+  .ejemplos { margin-top: 28px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .ejemplos article { padding: 22px; border-radius: 20px; background: #fff; border: 1px solid var(--borde); border-left: 4px solid #ff6b4a; }
+  .ejemplos h3 { margin: 0 0 6px; font-size: 17px; }
+  .ejemplos p { margin: 0; color: var(--suave); line-height: 1.5; }
+
+  .galeria { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 28px max(20px, calc((100vw - var(--ancho)) / 2)) 24px; }
+  .captura { flex: none; width: clamp(300px, 46vw, 620px); scroll-snap-align: center; text-decoration: none; color: var(--texto); }
+  .captura :global(img) { display: block; width: 100%; height: auto; border-radius: 18px; box-shadow: 0 18px 40px -10px rgba(16, 24, 40, 0.35); }
+  .captura span { display: block; margin-top: 10px; font-size: 14px; font-weight: 600; color: var(--suave); }
+
+  .privacidad { margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .privacidad article { padding: 24px; border-radius: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); }
+  .icono-p { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; background: rgba(48, 209, 88, 0.16); color: #30d158; }
+  .privacidad h3 { margin: 16px 0 6px; font-size: 18px; }
+  .privacidad p { margin: 0; color: rgba(255, 255, 255, 0.66); line-height: 1.55; }
+  .enlace-politica { display: inline-block; margin-top: 24px; color: #ff9f6b; font-weight: 700; text-decoration: none; }
+
+  .preguntas-fila { display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; align-items: start; }
+  .prosa { color: var(--suave); line-height: 1.65; }
+  .preguntas { display: grid; gap: 10px; }
+  .titulo-preguntas { margin: 0 0 6px; font-size: 20px; }
+  details { border: 1px solid var(--borde); border-radius: 16px; padding: 16px 20px; background: var(--fondo); }
+  summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font-size: 20px; line-height: 1; color: var(--suave); transition: transform 0.2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { margin: 10px 0 0; color: var(--suave); line-height: 1.55; }
+
+  .cierre { position: relative; overflow: hidden; color: #fff; background: var(--noche-islita); padding: 96px 0; }
+  .cierre :global(.icono-cierre) { position: relative; width: 104px; height: 104px; border-radius: 28px; box-shadow: 0 24px 50px rgba(0, 0, 0, 0.5); }
+  .cierre h2 { position: relative; margin: 24px 0 8px; font-size: clamp(30px, 4vw, 46px); letter-spacing: -0.02em; }
+  .cierre p { position: relative; margin: 0 0 26px; color: rgba(255, 255, 255, 0.7); font-size: 18px; }
+  .cierre .tecnica { position: relative; display: block; margin-top: 22px; color: rgba(255, 255, 255, 0.45); }
+
+  .otras { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 28px; }
+  .cta { margin-top: 40px; display: flex; gap: 18px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  .cta p { margin: 0; font-weight: 600; }
+
+  @media (max-width: 900px) {
+    .fila-destacado, .preguntas-fila { grid-template-columns: 1fr; gap: 28px; }
+    .invertido .texto-destacado { order: 0; }
+    .pantalla { margin-top: 40px; }
+  }
+</style>

@@ -1,7 +1,7 @@
 ---
 nombre: Islita
 eslogan: Tu escritorio ya tiene isla
-resumen: Una isla dinámica para Windows, en español. Música, letras, notificaciones, Pomodoro, tareas, portapapeles y archivos, arriba de tu pantalla y sin abrir otra ventana.
+resumen: Una isla dinámica para Windows, en español. Música, tareas, calendario, Pomodoro, agua, notificaciones y una barra para pedir lo que necesitas, arriba de tu pantalla y sin abrir otra ventana.
 categoria: Productividad
 orden: 3
 plataforma: Windows
@@ -11,58 +11,61 @@ colores: { principal: '#C7364F', oscuro: '#1B1430', suave: '#FFF0E8' }
 icono: ../../assets/apps/islita/icono.png
 destacado: ../../assets/apps/islita/destacado.png
 pantallas:
-  - ../../assets/apps/islita/pantallas/pomodoro.png
-  - ../../assets/apps/islita/pantallas/sistema.png
+  - ../../assets/apps/islita/pantallas/inicio.png
+  - ../../assets/apps/islita/pantallas/enfoque.png
 capturas:
-  - { src: ../../assets/apps/islita/capturas/ajustes-pantallas.png, titulo: 'Ajustes: ordena y apaga las pantallas' }
-  - { src: ../../assets/apps/islita/capturas/ajustes-pomodoro.png, titulo: 'Ajustes: tu Pomodoro y cuánto dura un ciclo' }
-  - { src: ../../assets/apps/islita/capturas/ajustes-general.png, titulo: 'Ajustes: cómo se comporta sobre otras apps' }
-  - { src: ../../assets/apps/islita/capturas/ajustes-privacidad.png, titulo: 'Ajustes: qué sale de tu equipo y qué no' }
-  - { src: ../../assets/apps/islita/capturas/pomodoro.png, titulo: Pomodoro con anillo de progreso }
-  - { src: ../../assets/apps/islita/capturas/sistema.png, titulo: 'CPU, RAM y GPU de un vistazo' }
-  - { src: ../../assets/apps/islita/capturas/portapapeles.png, titulo: Lo que copiaste siempre a mano }
+  - { src: ../../assets/apps/islita/capturas/1-panel.png, titulo: 'Un panel con lo que usas a diario' }
+  - { src: ../../assets/apps/islita/capturas/2-musica.png, titulo: 'Tu música y su letra, juntas' }
+  - { src: ../../assets/apps/islita/capturas/3-tareas-enfoque.png, titulo: 'Tareas con su día y un Pomodoro' }
+  - { src: ../../assets/apps/islita/capturas/4-calendario.png, titulo: 'Tu semana de un vistazo' }
+  - { src: ../../assets/apps/islita/capturas/5-funciones-rapidas.png, titulo: 'Cuentas, divisas y la hora en otras ciudades' }
+  - { src: ../../assets/apps/islita/capturas/6-asistente.png, titulo: 'Pregúntale a la IA sin salir de lo que haces' }
+  - { src: ../../assets/apps/islita/capturas/7-temas.png, titulo: 'Seis temas para la isla' }
+  - { src: ../../assets/apps/islita/capturas/8-notificaciones.png, titulo: 'Notificaciones y temporizadores sin estorbar' }
 funciones:
-  - titulo: Música
-    texto: Carátula, controles y progreso de lo que suena, en Spotify o YouTube.
-  - titulo: Letras
-    texto: Línea por línea y a tiempo, con ajuste si van desfasadas.
+  - titulo: Panel amplio
+    texto: Al acercar el mouse se abre con tus tarjetas de inicio, y eliges cuáles ver.
+  - titulo: Música y letra
+    texto: Lo que suena, su letra línea por línea y el volumen, en una sola vista.
+  - titulo: Tareas y calendario
+    texto: Asigna tareas a cada día, muévelas arrastrando y mira tus recordatorios en el mes.
   - titulo: Pomodoro
-    texto: Duraciones a tu medida, con el tiempo siempre visible.
-  - titulo: Tareas
-    texto: Lo pendiente arriba, lo hecho abajo y un anillo con tu avance.
-  - titulo: Portapapeles
-    texto: Textos, enlaces e imágenes que copiaste, con pausa para lo privado.
-  - titulo: Bandeja de archivos
-    texto: Suelta archivos en la isla y sácalos cuando los necesites.
-  - titulo: Sistema
-    texto: CPU, RAM, GPU y red en anillos y una gráfica.
+    texto: Duraciones a tu medida y una tarjeta que cambia de color con cada fase.
+  - titulo: Barra para pedir lo que necesitas
+    texto: «Recuérdame llamar a las 3», «tarea pagar la luz mañana» o «concentración 50», con Ctrl+Alt+I.
+  - titulo: Funciones rápidas
+    texto: Cuentas, conversión de divisas con la tasa del día y la hora en otras ciudades.
+  - titulo: Agua
+    texto: Un recordatorio para tomar agua y un vaso que se llena con los vasos del día.
+  - titulo: Asistente con IA
+    texto: Pregúntale a Gemini desde la isla con tu propia clave. Es opcional.
+  - titulo: Portapapeles y bandeja
+    texto: Lo que copiaste siempre a mano y una bandeja para soltar y sacar archivos.
+  - titulo: Sistema y Bluetooth
+    texto: CPU, RAM, GPU y red, y la batería de tus audífonos con aviso cuando baja.
   - titulo: Notificaciones y volumen
-    texto: Banners y una barra de volumen, siempre en el mismo lugar.
-  - titulo: Batería de Bluetooth
-    texto: El nivel de tus audífonos y parlantes, con un aviso cuando esté bajo.
-  - titulo: Colombia
-    texto: La TRM del día con su variación y cuánto falta para el próximo festivo.
-  - titulo: Micrófono y cámara
-    texto: Un punto de color te avisa cuando alguna aplicación los está usando.
+    texto: Banners de Windows y una barra de volumen, siempre en el mismo lugar.
+  - titulo: Dólar o TRM
+    texto: El valor del dólar en tu moneda; en Colombia, la TRM del día y el próximo festivo.
+  - titulo: Temas
+    texto: Medianoche, Océano, Atardecer, Bosque, Lavanda o Grafito, con un clic.
   - titulo: Modo discreto
-    texto: Sobre una ventana maximizada se reduce a una línea fina y deja libres tus pestañas.
-  - titulo: Ajustes a tu medida
-    texto: Ordena las pantallas, apaga las que no uses y define tu Pomodoro.
+    texto: Sobre una ventana maximizada se reduce a una línea fina y se oculta en pantalla completa.
 ejemplos:
-  - titulo: Suena una canción mientras trabajas
-    texto: Pausas o saltas a la siguiente desde la isla, sin dejar el documento en el que estás.
+  - titulo: Planeas la semana el lunes
+    texto: Abres el calendario, asignas cada pendiente a su día y la tarjeta Hoy te muestra solo lo de hoy.
   - titulo: Necesitas concentrarte
-    texto: Inicias un Pomodoro de 25 minutos y la píldora te muestra el tiempo sin que tengas que abrir nada.
-  - titulo: Copias varias cosas seguidas
-    texto: Vuelves a ese enlace o a ese texto que copiaste hace rato, sin perderlo con lo último que copiaste.
-  - titulo: Preparas un correo con archivos de varias carpetas
-    texto: Los sueltas en la bandeja a medida que los encuentras y luego los arrastras todos de una vez.
-  - titulo: Tu computador se pone lento
-    texto: Miras en la isla cuánta CPU y RAM se están usando, sin abrir el Administrador de tareas.
+    texto: Escribes «concentración» en la barra y la píldora te muestra el tiempo sin que tengas que abrir nada.
+  - titulo: Haces una cuenta o una compra en otra moneda
+    texto: Escribes «15% de 230» o «100 usd a cop» y ves el resultado mientras escribes; Enter lo copia.
+  - titulo: Tienes una reunión con alguien en otro país
+    texto: Escribes «hora en Madrid» y sabes al instante qué hora es allá y cuánto se llevan.
+  - titulo: Pasas horas frente al computador
+    texto: Islita te recuerda tomar agua y anotas cada vaso con un toque o con «ya tomé agua».
+  - titulo: Suena una canción mientras trabajas
+    texto: Pausas, saltas o bajas el volumen desde la isla, y si quieres la cantas con su letra.
   - titulo: Presentas o ves una película
     texto: Al pasar a pantalla completa la isla se oculta sola y sus avisos no te interrumpen.
-  - titulo: Navegas con el navegador maximizado
-    texto: La isla se reduce a una línea fina para no tapar tus pestañas y vuelve cuando dejas el puntero sobre ella.
 videos:
   - { archivo: musica, titulo: 'Música: la isla se abre con lo que está sonando' }
   - { archivo: pomodoro, titulo: 'Pomodoro: pausar, reiniciar e iniciar' }
@@ -73,14 +76,15 @@ videos:
 tecnologias: [C#, .NET, WinUI 3, Windows App SDK]
 seo:
   titulo: 'Islita: isla dinámica para Windows, en español'
-  descripcion: 'Música, letras, notificaciones, Pomodoro, tareas y portapapeles en una isla arriba de tu pantalla. App gratis para Windows, en español, en Microsoft Store.'
+  descripcion: 'Música, tareas, calendario, Pomodoro, agua y una barra de comandos en una isla arriba de tu pantalla. App gratis para Windows, en español, en Microsoft Store.'
 tipoSchema: UtilitiesApplication
 ---
 
 Islita nació para llevar a Windows la idea de una isla dinámica, con todo en
-español. Es una muesca negra arriba de la pantalla: en reposo muestra la hora y,
-al pasar el mouse, se abre con música, tareas, notificaciones y lo que usas a
-diario, sin abrir otra ventana.
+español. En reposo es una píldora discreta arriba de la pantalla que muestra la
+hora; al acercar el mouse se abre como un panel con tu música, tus tareas de hoy,
+el Pomodoro, el agua del día y una barra para pedir lo que necesitas.
 
-Se oculta sola en pantalla completa y deja pasar tus clics fuera de la isla.
-Ya está disponible gratis en Microsoft Store.
+Tiene calendario, funciones rápidas, un asistente con IA opcional y seis temas.
+Se oculta sola en pantalla completa, no tiene cuentas ni servidores propios, y
+está disponible gratis en Microsoft Store.
